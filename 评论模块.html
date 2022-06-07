@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="font/iconfont.css">
+    <link rel="stylesheet" href="css/comments.css">
+    <script src=" js/commonFunction.js"></script>
+    <script src="js/ajax.js"></script>
+
+</head>
+
+<body>
+    <div class="container" id="container">
+        <ul>
+        </ul>
+    </div>
+
+
+    <script>
+        const url = "http://localhost:3000";
+
+        let li = document.getElementsByTagName('li');
+        let father = document.querySelector('ul');
+
+        class comment1 {
+            constructor(obj) {
+                // 这里的container代表的是传入的评论节点 
+                this.container = obj;
+
+
+
+                // 从container里面的自定义属性获取他的用户id和评论id。（可以在这里将点赞数，评论数添加到属性里）
+                this.chatid = obj.getAttribute('id');
+                this.userid = obj.getAttribute('userid');
+
+
+                //获取评论里的按钮
+                this.commentBtn = obj.querySelector('.ot');
+                this.likeBtn = obj.querySelector('.like');
+                this.deleteBtn = obj.querySelector('.deletebtn');
+
+
+                // this.init代表执行绑定操作
+                this.init();
+            }
+            // 这里是需要更新的数据，比如：点赞数目会随着点击次数而改变
+            update() {
+                this.likeNum = this.container.querySelector(".likeNum");
+            }
+
+            init() {
+                // 先更新一下数据
+                this.update();
+                // 绑定事件
+                this.likeBtn.onclick = this.like.bind(this);
+                this.deleteBtn.onclick = this.delete.bind(this);
+                this.commentBtn.onclick = this.comment.bind(this);
+            }
+            like() {
+                //current样式代表字体变蓝
+
+                if (this.likeBtn.classList.contains('current')) {
+                    //这里可以发送点赞的请求
+                    this.likeBtn.classList.remove('current');
+                    this.likeNum.innerText--;
+                }
+
+                else {
+                    this.likeBtn.classList.add('current');
+                    this.likeNum.innerText++;
+                }
+
+                this.init();
+            }
+
+            delete() {
+                // 点击删除按钮删除该节点
+                this.container.remove();
+            }
+
+            comment() {
+                // 在这里可以进行评论操作
+                alert(`你点击了评论 该评论序号是${this.chatid}`);
+            }
+        }
+
+
+        // 存数据进去
+        function commentinit() {
+            myAjax({
+                url: url + '/comments',
+                method: 'get'
+            }).then(res => {
+                console.log(res);
+                res.forEach(value => {
+                    console.log(value);
+                    let { authorId, content, likes, id } = value;
+                    myAjax({
+                        url: url + '/authorBase',
+                        method: 'get',
+                        data: {
+                            authorId: authorId,
+                        }
+                    }).then(res => {
+                        console.log(res);
+                        let { avatar, nickname } = res[0];
+                        console.log(avatar);
+                        let item =
+                            `   <div class="content">
+                                    <div class="title">
+                                        <div class="user">
+                                            <span class="avatar"> <img src="${avatar}" alt=""></span>
+                                            <div class="infor">
+                                                <span class="nickname">${nickname}</span>
+                                    <div class="exp">
+                                        <span class="bg">测试测试</span>
+                                    </div>
+                                            </div >
+
+                                        </div >
+
+
+                                    <div class="deletebtn">
+
+                                    </div>
+                                    </div >
+
+                                    <div class="comment">
+                                    ${content}
+                                    </div>
+
+                                    <div class="detail">
+                                        <span class="ot">
+                                            <i class="iconfont">&#xe669;</i>
+                                            <p>评论</p>
+                                        </span>
+                                        <span class="like">
+                                            <i class="iconfont">&#xe603;
+                                            </i>
+                                            <p>点赞 <span class="likeNum">${likes}</span> </p>
+                                        </span>
+                                    </div>
+                                </div >
+                            `
+
+                        let li = document.createElement('li');
+                        //利用自定义属性将用户id，评论id放到li当中
+                        li.setAttribute('userid', authorId);
+                        li.setAttribute('id', id);
+
+
+                        li.innerHTML = item;
+
+                        // 给该节点添加属性，方法
+                        new comment1(li);
+
+                        // 最后添加到页面当中
+                        father.appendChild(li);
+
+                    })
+                })
+            })
+        }
+        commentinit();
+
+
+
+
+
+    </script>
+</body>
+
+</html>

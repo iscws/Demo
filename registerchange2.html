@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0 0;
+            padding: 0 0;
+            box-sizing: border-box
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(#f1e8ed, #e5edfc);
+        }
+
+        .intro {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            width: 650px;
+            height: 415px;
+            background-color: #fff;
+            border-radius: 20px;
+        }
+
+        .intro [class^=intro] {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title {
+            text-align: center;
+        }
+
+        [class^=img] {
+            margin: 30px 0;
+            width: 150px;
+            height: 150px;
+            background: center no-repeat;
+            background-size: cover;
+            border-radius: 10px;
+            overflow: hidden;
+
+        }
+
+        .intro h1 {
+            color: #8e9aaf;
+        }
+
+        .intro p {
+            color: #8e9aaf;
+            padding: 10px 0;
+        }
+
+        .intro button {
+            padding: 5px 8px;
+            color: #a262ad;
+            border: 1px solid #a262ad;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .intro button:hover {
+            color: #ed375e;
+        }
+
+        .img-1 {
+            background-image: url(images/yuqi.jpg);
+        }
+
+        .img-2 {
+            background-image: url(images/yuqi2.jpg);
+        }
+
+        .slider {
+            position: absolute;
+            top: -5%;
+            left: 5%;
+            width: 45%;
+            height: 110%;
+            background-color: #d3b7d8;
+            border-radius: 10px;
+            transition: all 0.8s;
+            z-index: 1;
+        }
+
+        .slider>div {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slider h1 {
+            color: #fff;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* align-items: center; */
+            padding: 30px 0;
+        }
+
+        .form input {
+            margin: 8px 0;
+            /* padding: 0 20px; */
+            height: 30px;
+            background-color: transparent;
+            color: #a262ad;
+            border: 0;
+            border-bottom: 1px solid #fff;
+            outline: 0;
+        }
+
+        .form input::placeholder {
+            color: #fff;
+        }
+
+        .form .btn {
+            height: 35px;
+            margin-top: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            border: 0;
+            cursor: pointer;
+            transition: all 0.4s;
+        }
+
+        .form .btn:hover {
+            background-color: #a262ad;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="intro">
+        <div class="slider">
+            <div class="slider-left">
+                <h1>LOGIN</h1>
+                <form action="" class="form">
+                    <input type="text" placeholder="用户名">
+                    <input type="password" name="" id="" value="" placeholder="密码">
+                    <input type="submit" value="登 录" class="btn">
+                </form>
+            </div>
+
+            <div class="slider-right" style="display: none;">
+                <h1>REGISTER</h1>
+                <form action="" class="form">
+                    <input type="text" placeholder="用户名">
+                    <input type="email" placeholder="邮箱">
+                    <input type="password" value="" placeholder="密码">
+                    <input type="password" placeholder="确认密码">
+                    <input type="submit" value="注 册" class="btn">
+                </form>
+            </div>
+
+        </div>
+        <div class="intro-left">
+            <h1>TOMBOY ?</h1>
+            <p>今天星期几</p>
+
+            <div class="img-1">
+            </div>
+
+            <p>已有帐号</p>
+            <button class="hahaLO">登录</button>
+
+        </div>
+        <div class="intro-right">
+
+            <h1>TOMBOY !</h1>
+            <p>你说星期几就几</p>
+
+
+            <div class="img-2">
+            </div>
+
+
+            <p>没有账号</p>
+            <button class="hahaRE">去注册</button>
+
+        </div>
+    </div>
+
+
+    <script>
+        var hahaLO = document.querySelector('.hahaLO');
+        // console.log(hahaLO);
+        var hahaRE = document.querySelector('.hahaRE');
+        var slider = document.querySelector('.slider');
+        var slider_left = document.querySelector('.slider-left');
+        var slider_right = document.querySelector('.slider-right');
+        hahaRE.addEventListener('click', function () {
+            slider_left.style.display = 'none';
+            slider_right.style.display = 'flex';
+            slider.style.left = '50%';
+        })
+
+        hahaLO.addEventListener('click', function () {
+            slider_right.style.display = 'none';
+            slider_left.style.display = 'flex';
+            slider.style.left = '5%';
+        })
+    </script>
+</body>
+
+</html>
