@@ -44,11 +44,11 @@
 
     <div id="con" class="container">
         <div class="item show">
-           
+
         </div>
     </div>
 
-    <img src="" alt="" id="img" style="width: 200px; height: auto;">
+    <img src=https://github.com/cwscrsj/typoraImges/blob/main/img/202206121736224.png?raw=true" alt="" id="img" style="width: 200px; height: auto;">
 
 
     <script>
@@ -64,10 +64,14 @@
 
 
             for (value of response) {
-                let img=new Image
+                let img = new Image
                 let { images } = value;
-                console.log(images);
-
+                img.src = images;
+                let item = ` <div id="con" class="container">
+                        <div class="item show">
+                            ${console.log(img)}
+                            </div>
+                    </div>`
             }
         }
 
