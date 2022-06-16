@@ -42,28 +42,35 @@
 
             // 先将获取到的信息存放到内存空间
             const fragment = document.createDocumentFragment();
+
             //利用res接收获取到的数据
             let res = await myAjax({
                 url: url + '/comments',
                 method: 'get',
             })
 
-            //将获取到的数据 提取照片出来
-            for (item of res) {
-                let { images } = item;//解构赋值
-
-                //将加载完毕的照片 用img接收
+            //将获取到的数据 提取照片出来,
+            const imgs = res.map(async item => {
+                let { images } = item;
+                // 并发让所有照片进入加载
+                //  使用for of的话，就必须等到每一张图片加载完成后才能继续下一张加载
                 let img = await loadImg(images);
-
                 // 添加到fragment当中
                 fragment.appendChild(img);
-            }
+                return img;
 
-            //关闭加载动画
-            div.style.display = 'none';
+            })
 
-            // 所有照片加载完毕后添加到dom里
-            document.body.appendChild(fragment);
+            //利用promise.all保证所有照片加载完成后就执行操作
+            Promise.all(imgs).then(function (e) {
+                //关闭加载动画
+                div.style.display = 'none';
+                // 所有照片加载完毕后添加到dom里
+                document.body.appendChild(fragment);
+            });
+
+
+
         })
 
 
