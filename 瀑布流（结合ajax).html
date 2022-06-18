@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="js/ajax.js"></script>
+    <link rel="stylesheet" href="font/iconfont.css">
     <style>
         * {
             margin: 0;
@@ -22,19 +23,42 @@
         .item {
             width: 200px;
             height: auto;
-            padding: 10px;
+            padding: 10px 10px 5px 10px;
             position: absolute;
             transition: all .5s ease-in-out;
-        }
-
-        .item .picture {
-            padding: 10px;
             border: 1px solid #eee;
             box-shadow: 0 0 5px 5px #eee;
         }
 
+
         .item .picture img {
             width: 100%;
+        }
+
+        .name {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        .name::after {
+            content: ' ';
+            font-family: 'iconfont';
+
+            position: absolute;
+            right: 0;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+        }
+
+        .head {
+            width: 20px;
+            height: 20px;
+            padding-right: 5px;
+            border-radius: 50%;
         }
     </style>
 </head>
@@ -45,34 +69,110 @@
     <div id="con" class="container">
         <div class="item show">
 
+            <div class="picture">
+                <img src="images/1.jpg" alt="">
+            </div>
+
+            <div class="user">
+                <h4 class="title">这是个哈哈哈</h4>
+                <div class="name">
+                    <img class="head" src="images/1.png">
+                    <p>小明</p>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <img src=https://github.com/cwscrsj/typoraImges/blob/main/img/202206121736224.png?raw=true" alt="" id="img" style="width: 200px; height: auto;">
-
 
     <script>
+        // 利用promise：只有图片加载完毕才退出异步
+        function loadImg(src) {
+            return new Promise((resolve, reject) => {
+                var img = new Image();
+                img.src = src;
+
+                img.onload = function () {
+                    resolve(img);
+                };
+                img.onerror = function (img) {
+                    reject('加载出错啦');
+                };
+            });
+
+
+        }
+
+
+        function item1(title, avatar, name,) {
+            return `            
+                <div class="user">
+                    <h4 class="title">${title}</h4>
+                    <div class="name">
+                        <img class="head" src="${avatar}">
+                        <p>${name}</p>
+                    </div>
+                </div>
+
+            `;
+        }
         let container = document.getElementById('con');
         let img = document.getElementById('img');
         const url = ' http://localhost:3000';
 
         async function itemin() {
+            // 接收数据结果
             let response = await myAjax({
                 url: url + '/comments',
                 method: "get",
-            })
+            });
+
+            // 遍历获取数据，添加到内存空间当中
+            let fulladd = await Promise.all(response.map(async value => {
+                // 获得文章基本信息
+                let { authorId, content, images } = value;
+
+                // 根据文章信息获取作者信息
+                let authorInfor = await myAjax({
+                    url: url + '/authorBase',
+                    method: 'get',
+                    data: {
+                        authorId: authorId,
+                    }
+                });
+
+                // 获取作者头像和昵称
+                let { nickname, avatar } = authorInfor[0];
 
 
-            for (value of response) {
-                let img = new Image
-                let { images } = value;
-                img.src = images;
-                let item = ` <div id="con" class="container">
-                        <div class="item show">
-                            ${console.log(img)}
-                            </div>
-                    </div>`
-            }
+
+                let itemAdd = item1(content, avatar, nickname);
+
+                // 创造一个item节点
+                let item = document.createElement('div');
+                let picture = document.createElement('div');
+
+                item.className = 'item';
+                picture.className = 'picture';
+
+                // 等到图片加载完成就添加到盒子里
+                picture.appendChild(await loadImg(images));
+
+                // 将初始化后的数据丢到盒子里
+                item.appendChild(picture);
+                item.insertAdjacentHTML('beforeend', itemAdd);
+
+
+
+
+                console.log(item);
+
+                return 1;
+            }))
+
+
+
+
         }
 
         itemin();
