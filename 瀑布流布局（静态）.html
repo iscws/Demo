@@ -181,8 +181,12 @@
                     item[i].style.left = item[index].style.left;
                     //将元素放到对应后需要重新找到高度最小的那一个
                     ar[index] += item[i].offsetHeight;
-
+                    if (i + 1 == item.length) {
+                        container.style.height = ar[index] + 'px';
+                    }
                 }
+
+
 
             }
         }

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="js/ajax.js"></script>
+    <script src="js/commonFunction.js"></script>
     <link rel="stylesheet" href="font/iconfont.css">
     <style>
         * {
@@ -21,7 +22,7 @@
         }
 
         .item {
-            width: 200px;
+            width: 150px;
             height: auto;
             padding: 10px 10px 5px 10px;
             position: absolute;
@@ -60,32 +61,97 @@
             padding-right: 5px;
             border-radius: 50%;
         }
+
+        .spinner {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            height: 40px;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .spinner>div {
+            background-color: rgb(149, 140, 140);
+            height: 100%;
+            width: 6px;
+            display: inline-block;
+
+            -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+            animation: sk-stretchdelay 1.2s infinite ease-in-out;
+        }
+
+        .spinner .rect2 {
+            -webkit-animation-delay: -1.1s;
+            animation-delay: -1.1s;
+        }
+
+        .spinner .rect3 {
+            -webkit-animation-delay: -1.0s;
+            animation-delay: -1.0s;
+        }
+
+        .spinner .rect4 {
+            -webkit-animation-delay: -0.9s;
+            animation-delay: -0.9s;
+        }
+
+        .spinner .rect5 {
+            -webkit-animation-delay: -0.8s;
+            animation-delay: -0.8s;
+        }
+
+        @-webkit-keyframes sk-stretchdelay {
+
+            0%,
+            40%,
+            100% {
+                -webkit-transform: scaleY(0.4)
+            }
+
+            20% {
+                -webkit-transform: scaleY(1.0)
+            }
+        }
+
+        @keyframes sk-stretchdelay {
+
+            0%,
+            40%,
+            100% {
+                transform: scaleY(0.4);
+                -webkit-transform: scaleY(0.4);
+            }
+
+            20% {
+                transform: scaleY(1.0);
+                -webkit-transform: scaleY(1.0);
+            }
+        }
     </style>
 </head>
 
 <body>
     <h1 style="text-align: center; margin:50px 0;font-weight: 100;"> 瀑布流升级版 </h1>
 
-    <div id="con" class="container">
-        <div class="item show">
-
-            <div class="picture">
-                <img src="images/1.jpg" alt="">
-            </div>
-
-            <div class="user">
-                <h4 class="title">这是个哈哈哈</h4>
-                <div class="name">
-                    <img class="head" src="images/1.png">
-                    <p>小明</p>
-                </div>
-            </div>
-
-        </div>
+    <div id="container" class="container">
     </div>
 
 
     <script>
+        // 判断变量，防止多次触发
+        let init = true;
+
+        // 底部无限加载
+        window.addEventListener('scroll', throttle(() => {
+            // 获取到所有子元素
+            let item = document.getElementsByClassName('item');
+            // 当页面滚轮到最后一个元素时发送请求加载数据
+            if (item[item.length - 1].getBoundingClientRect().top < window.innerHeight && init == true) {
+                itemin(init);
+            }
+        }, 300))
+
         // 利用promise：只有图片加载完毕才退出异步
         function loadImg(src) {
             return new Promise((resolve, reject) => {
@@ -116,11 +182,14 @@
 
             `;
         }
-        let container = document.getElementById('con');
+        let container = document.getElementById('container');
         let img = document.getElementById('img');
         const url = ' http://localhost:3000';
 
         async function itemin() {
+            init = false;
+            loadAnimate('container', true);
+            const fragment = document.createDocumentFragment();
             // 接收数据结果
             let response = await myAjax({
                 url: url + '/comments',
@@ -128,7 +197,7 @@
             });
 
             // 遍历获取数据，添加到内存空间当中
-            let fulladd = await Promise.all(response.map(async value => {
+            await Promise.all(response.map(async value => {
                 // 获得文章基本信息
                 let { authorId, content, images } = value;
 
@@ -145,7 +214,6 @@
                 let { nickname, avatar } = authorInfor[0];
 
 
-
                 let itemAdd = item1(content, avatar, nickname);
 
                 // 创造一个item节点
@@ -159,23 +227,32 @@
                 picture.appendChild(await loadImg(images));
 
                 // 将初始化后的数据丢到盒子里
-                item.appendChild(picture);
-                item.insertAdjacentHTML('beforeend', itemAdd);
+                item.appendChild(picture);//放照片
+                item.insertAdjacentHTML('beforeend', itemAdd);//放文章和作者信息
 
 
 
+                fragment.appendChild(item);
+                init = true;
 
-                console.log(item);
 
-                return 1;
             }))
 
+            container.appendChild(fragment);
+            // 执行瀑布流函数
+            waterFall('container');
+            //执行加载函数
+            loadAnimate('container', false);
 
 
 
         }
 
+
         itemin();
+
+
+
     </script>
 </body>
 
