@@ -83,5 +83,5 @@ function myAjax(options) {
 
 
 
-
+export { myAjax, objToFormdata, resolveData };
 // 封装一个登录查询的函数
