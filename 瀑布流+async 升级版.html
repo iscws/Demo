@@ -141,7 +141,8 @@
     <script>
         // 判断变量，防止多次触发
         let init = true;
-
+        //错误次数
+        const NUM_RETRIES = 3;
         // 底部无限加载
         window.addEventListener('scroll', throttle(() => {
             // 获取到所有子元素
@@ -155,7 +156,7 @@
         // 利用promise：只有图片加载完毕才退出异步
         function loadImg(src) {
             return new Promise((resolve, reject) => {
-                var img = new Image();
+                let img = new Image();
                 img.src = src;
 
                 img.onload = function () {
@@ -163,6 +164,7 @@
                 };
                 img.onerror = function (img) {
                     reject('加载出错啦');
+
                 };
             });
 
@@ -186,7 +188,9 @@
         let img = document.getElementById('img');
         const url = ' http://localhost:3000';
 
+
         async function itemin() {
+
             init = false;
             loadAnimate('container', true);
             const fragment = document.createDocumentFragment();
@@ -223,14 +227,23 @@
                 item.className = 'item';
                 picture.className = 'picture';
 
-                // 等到图片加载完成就添加到盒子里
-                picture.appendChild(await loadImg(images));
+
+                // 等到图片加载完成就添加到盒子里,如果发生错误则重试3次
+                for (let i = 0; i < NUM_RETRIES; ++i) {
+                    try {
+                        let finishLoadImg = await loadImg(images);
+                        picture.appendChild(finishLoadImg);
+                        break;
+                    } catch (error) {
+
+                    }
+                }
+
+                // picture.appendChild(await loadImg(images));
 
                 // 将初始化后的数据丢到盒子里
                 item.appendChild(picture);//放照片
                 item.insertAdjacentHTML('beforeend', itemAdd);//放文章和作者信息
-
-
 
                 fragment.appendChild(item);
 
@@ -243,6 +256,7 @@
             //执行加载函数
             loadAnimate('container', false);
             init = true;
+
 
         }
 
