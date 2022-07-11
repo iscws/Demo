@@ -139,37 +139,26 @@
 
 
     <script>
-        // 判断变量，防止多次触发
-        let init = true;
-        //错误次数
-        const NUM_RETRIES = 3;
+        // 需要用到的全局变量
+        let global_var = {
+            // 判断变量，防止多次触发 
+            init: true,
+            //错误次数
+            NUM_RETRIES: 3,
+            url: ' http://localhost:3000',
+        }
+
+
         // 底部无限加载
         window.addEventListener('scroll', throttle(() => {
             // 获取到所有子元素
             let item = document.getElementsByClassName('item');
             // 当页面滚轮到最后一个元素时发送请求加载数据
-            if (item[item.length - 1].getBoundingClientRect().top < window.innerHeight && init == true) {
-                itemin(init);
+            if (item[item.length - 1].getBoundingClientRect().top < window.innerHeight && global_var.init == true) {
+                itemin(global_var.init);
             }
         }, 300))
 
-        // 利用promise：只有图片加载完毕才退出异步
-        function loadImg(src) {
-            return new Promise((resolve, reject) => {
-                let img = new Image();
-                img.src = src;
-
-                img.onload = function () {
-                    resolve(img);
-                };
-                img.onerror = function (img) {
-                    reject('加载出错啦');
-
-                };
-            });
-
-
-        }
 
 
         function item1(title, avatar, name,) {
@@ -186,17 +175,16 @@
         }
         let container = document.getElementById('container');
         let img = document.getElementById('img');
-        const url = ' http://localhost:3000';
 
 
         async function itemin() {
 
-            init = false;
+            global_var.init = false;
             loadAnimate('container', true);
             const fragment = document.createDocumentFragment();
             // 接收数据结果
             let response = await myAjax({
-                url: url + '/comments',
+                url: global_var.url + '/comments',
                 method: "get",
             });
 
@@ -207,7 +195,7 @@
 
                 // 根据文章信息获取作者信息
                 let authorInfor = await myAjax({
-                    url: url + '/authorBase',
+                    url: global_var.url + '/authorBase',
                     method: 'get',
                     data: {
                         authorId: authorId,
@@ -229,7 +217,7 @@
 
 
                 // 等到图片加载完成就添加到盒子里,如果发生错误则重试3次
-                for (let i = 0; i < NUM_RETRIES; ++i) {
+                for (let i = 0; i < global_var.NUM_RETRIES; ++i) {
                     try {
                         let finishLoadImg = await loadImg(images);
                         picture.appendChild(finishLoadImg);
@@ -255,7 +243,7 @@
             waterFall('container');
             //执行加载函数
             loadAnimate('container', false);
-            init = true;
+            global_var.init = true;
 
 
         }

@@ -89,3 +89,28 @@ function loadAnimate(fatherbox, flag) {
         box.remove();
     }
 }
+
+//排他思想
+function clearOther(container, name) {
+    let item = container.children;
+    for (let i = 0; i < item.length; i++) {
+        item[i].classList.remove(name);
+    }
+}
+// 利用promise：只有图片加载完毕才退出异步
+function loadImg(src) {
+    return new Promise((resolve, reject) => {
+        let img = new Image();
+        img.src = src;
+
+        img.onload = function () {
+            resolve(img);
+        };
+        img.onerror = function (img) {
+            reject('加载出错啦');
+
+        };
+    });
+
+
+}
