@@ -18,17 +18,17 @@
     </div>
 
     <ol class="page-change" id="btn">
-        <span class="last" style="visibility:visible;"> &lt; 上一页</span>
+        <button class="last" style="visibility:visible;"> &lt; 上一页</button>
         <ul id="main" class="main">
 
         </ul>
-        <span class="next" style="visibility:visible; ">下一页 &gt; </span>
+        <button class="next" style="visibility:visible; ">下一页 &gt; </button>
     </ol>
 
 
 
     <script>
-    
+
 
         class Pages {
             // 默认配置
@@ -92,10 +92,10 @@
                         //让其他item样式去掉
                         this.goPage(parseInt(target.innerHTML));
                     }
-                    else if (target.className.toLowerCase() == 'next') {
+                    else if (target.classList.contains('next')) {
                         this.nextPage();
                     }
-                    else if (target.className.toLowerCase() == 'last') {
+                    else if (target.classList.contains('last')) {
                         this.pvePage();
                     }
                 })
@@ -112,14 +112,14 @@
 
                 //判断下一页和上一页的按钮是否需要隐藏（第一页和最后一页需要隐藏）
                 if (this.option.curr == 1) {
-                    this.pveBtn.style.visibility = 'hidden';
+                    changeBtnAllow(this.pveBtn, 'unique', false);
                 }
                 else if (this.option.count == this.option.curr) {
-                    this.nextBtn.style.visibility = 'hidden';
+                    changeBtnAllow(this.nextBtn, 'unique', false);
                 }
                 else {
-                    this.nextBtn.style.visibility = 'visible';
-                    this.pveBtn.style.visibility = 'visible';
+                    changeBtnAllow(this.pveBtn, 'unique', true);
+                    changeBtnAllow(this.nextBtn, 'unique', true);
                 }
 
                 // 通过循环将页码添加到页码当中
@@ -160,7 +160,7 @@
                 this.changePage();
             }
         }
-        
+
         //btn为添加的位置的id
         new Pages('btn', {
             // 数据总数
@@ -171,7 +171,16 @@
             // 当前页前后两边可显示的页码个数（选填，默认为2）
         })
 
-
+        function changeBtnAllow(node, className, flag) {
+            if (flag) {
+                node.classList.add(className);
+                node.disabled = false;
+            }
+            else {
+                node.classList.remove(className);
+                node.disabled = true;
+            }
+        }
 
     </script>
 </body>

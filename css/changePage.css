@@ -18,7 +18,7 @@ ol {
 }
 
 
-ol>span,
+ol>button,
 ol>ul li {
     float: left;
     padding: 10px 10px;
@@ -37,8 +37,12 @@ ol .current {
 }
 
 ol li:hover,
-ol span:hover {
+ol .unique:hover {
     color: #fff;
     background-color: #4e6ef2;
     cursor: pointer;
+}
+
+ol button:hover {
+    cursor: not-allowed;
 }
