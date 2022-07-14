@@ -94,7 +94,12 @@ function loadAnimate(fatherbox, flag) {
 function clearOther(container, name) {
     let item = container.children;
     for (let i = 0; i < item.length; i++) {
-        item[i].classList.remove(name);
+        if (name) {
+            item[i].classList.remove(name);
+        }
+        else {
+            item[i].style.display = 'none';
+        }
     }
 }
 // 利用promise：只有图片加载完毕才退出异步
@@ -118,6 +123,10 @@ function loadImg(src) {
 class Pages {
     // 默认配置
     static option = {
+        //放入分页表的位置
+        node: '',
+        //页面的位置，
+        container: '',
         // 每页显示数据条数（必填）
         limit: 5,
         // 数据总数
@@ -126,6 +135,9 @@ class Pages {
         curr: 1,
         // 当前页前后两边可显示的页码个数（选填，默认为2）
         pageShow: 2,
+        //放入页面的数据
+        data: '',
+
     }
 
     constructor(DataOptions) {
@@ -182,8 +194,8 @@ class Pages {
         console.log(this.option.count);
         for (let i = 0; i < this.option.count; i++) {
 
-            let item = `<ul class="list" page=${i + 1} style="width: 300px; height:200px"></ul>`;
-            if (i == 0) item = `<ul class="list current" page=${i + 1} style="width: 300px; height:200px"></ul>`;
+            let item = `<ul class="list" page=${i + 1} style="width: 300px; height:200px">${i + 1}</ul>`;
+            if (i == 0) item = `<ul class="list current" page=${i + 1} style="width: 300px; height:200px">${i + 1}</ul>`;
             this.container.insertAdjacentHTML('beforeend', item);
         }
 
@@ -260,32 +272,43 @@ class Pages {
     }
 
     changeCon() {
-
         clearOther(this.container, 'current');
+        clearOther(this.container);
         this.conList[this.option.curr - 1].classList.add('current');
-
+        this.conList[this.option.curr - 1].style.display = 'block';
     }
 }
 //变透明函数
-function opacitybox(container, callback) {
+function opacitybox(container) {
     // 先清除以前的定时器，只保留当前的一个定时器执行
-    clearInterval(container.timer);
-    container.style.opacity = 0;
-    let init = 0;
-    let final = 100;
-    //设置一个初始值100，每隔2ms减小以加快速度
-    // var num = 0;
-    container.timer = setInterval(() => {
-        let step = 1 / final;
-        if (final > 10)
-            final--;
-        if (c >= 1) {
-            // 停止动画
-            clearInterval(container.timer);
-            callback && callback();
-        }
-        container.style.opacity = init + step;
-        init += step;
-    }, 2);
+    return new Promise(resolve => {
+        clearInterval(container.timer);
+        container.style.opacity = 0;
+        let init = 0;
+        let final = 100;
+        //设置一个初始值100，每隔2ms减小以加快速度
+        // var num = 0;
+        container.timer = setInterval(() => {
+            let step = 1 / final;
+            if (final > 10)
+                final--;
+            if (init >= 1) {
+                // 停止动画
+                clearInterval(container.timer);
+                resolve();
+            }
+            container.style.opacity = init + step;
+            init += step;
+        }, 2);
+    })
 }
 
+//最简单的简单处理图片大小
+function adaptImg(img,NeedH) {
+    if (img.height > NeedH) {
+        img.style.width = 100 + '%';
+    }
+    else {
+        img.style.height = 100 + '%';
+    }
+}
