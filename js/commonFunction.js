@@ -266,5 +266,26 @@ class Pages {
 
     }
 }
-
+//变透明函数
+function opacitybox(container, callback) {
+    // 先清除以前的定时器，只保留当前的一个定时器执行
+    clearInterval(container.timer);
+    container.style.opacity = 0;
+    let init = 0;
+    let final = 100;
+    //设置一个初始值100，每隔2ms减小以加快速度
+    // var num = 0;
+    container.timer = setInterval(() => {
+        let step = 1 / final;
+        if (final > 10)
+            final--;
+        if (c >= 1) {
+            // 停止动画
+            clearInterval(container.timer);
+            callback && callback();
+        }
+        container.style.opacity = init + step;
+        init += step;
+    }, 2);
+}
 
