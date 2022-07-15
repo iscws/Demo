@@ -8,14 +8,15 @@
     <title>Document</title>
     <link rel="stylesheet" href="css/base.css">
     <script src="js/commonFunction.js"></script>
+    <link rel="stylesheet" href="css/animate.css">
     <style>
         .container {
             margin: 100px auto;
             position: relative;
             width: 800px;
             height: 400px;
-            background-color: pink;
-            /* overflow: hidden; */
+            box-shadow: 0 0 5px 5px #eee;
+            overflow: hidden;
         }
 
         .caro-con {
@@ -24,8 +25,6 @@
             left: 0;
             width: 0;
             height: 100%;
-
-            background-color: rgb(155, 130, 130);
         }
 
         .caro-con li {
@@ -112,107 +111,6 @@
 
 </body>
 <script>
-    class Carousel {
-        static option = {
-            // 插入位置
-            node: '',
-            //是否需要下按钮的位置，默认自带添加按钮
-            circle: true,
-            //左右按钮
-            slider: true,
-            // 限定的宽高
-            width: 100,
-            height: 100,
-            //图片总数
-            count: 5,
-            // 自动播放 默认为否
-            autoplay: false,
-            //图片来源
-            data: '',
-            //当前页面,默认为0
-            curr: 0,
-        }
-        constructor(options) {
-            this.option = Object.assign(Carousel.option, options);
-            this.container = document.getElementById(this.option.node);
-            this.imgContainer = this.container.querySelector('.caro-con');
-            if (this.option.circle) {
-                this.circle = this.container.querySelector('.caro-cle-b');
-            }
-            if (this.option.slider) {
-                this.nextBtn = this.container.querySelector('.caro-sli-next');
-                this.lastBtn = this.container.querySelector('.caro-sli-last');
-            }
-            this.init();
-        }
-
-        init() {
-            // 将图片添加到页面当中
-            this.initCaro();
-            // 将底部小圆点添加到页面
-            this.initCirle();
-        }
-
-        async initCaro() {
-            //给盒子初始化宽度
-            const conWidth = (this.option.count + 1) * this.option.width;
-            this.imgContainer.style.width = conWidth + 'px';
-            this.imgContainer.style.transition = '0.5s ease';
-
-            const fragment = document.createDocumentFragment();
-            await Promise.all(this.option.data.map(async value => {
-                let li = document.createElement('li');
-
-                li.style.width = this.option.width + 'px';
-                li.style.height = this.option.height + 'px';
-
-
-                let img = await loadImg(value);
-                //简单处理一下图片大小
-                adaptImg(img, this.option.height);
-                li.appendChild(img);
-
-                fragment.appendChild(li);
-            }))
-            console.log(fragment.children)
-            let item = fragment.children[0].cloneNode(true);
-            fragment.appendChild(item);
-            console.log(fragment.children)
-            this.imgContainer.appendChild(fragment);
-
-            //让轮播图动起来
-            this.moveCaro();
-        }
-
-        initCirle() {
-            const fragment = document.createDocumentFragment();
-            for (let i = 0; i < this.option.count; i++) {
-                let li = document.createElement('li');
-                fragment.appendChild(li);
-            }
-            fragment.children[0].classList.add('current');
-            this.circle.appendChild(fragment);
-        }
-        moveCaro() {
-            for (let i = 0; i < this.option.count; i++) {
-                //点击下方悬浮按钮
-                this.circle.children[i].addEventListener('click', () => {
-                    this.option.curr = i;
-                    console.log(i);
-                })
-            }
-            //点击左右按钮
-            this.nextBtn.addEventListener('click', this.nextCar.bind(this));
-            this.lastBtn.addEventListener('click', this.lastCar.bind(this));
-        }
-        nextCar() {
-            this.imgContainer.style.left = -(++this.option.curr) * this.option.width + 'px';
-        }
-        lastCar() {
-            this.imgContainer.style.left = -(--this.option.curr) * this.option.width + 'px';
-        }
-    }
-
     let img = ['https://raw.githubusercontent.com/cwscrsj/typoraImges/main/img/202206161746522.png',
         "https://raw.githubusercontent.com/cwscrsj/typoraImges/main/img/202206161747097.png", "https://raw.githubusercontent.com/cwscrsj/typoraImges/main/img/202206161747000.png", "https://github.com/cwscrsj/typoraImges/blob/main/img/202206121747006.png?raw=true", "https://github.com/cwscrsj/typoraImges/blob/main/img/202206121747588.png?raw=true"];
 
@@ -222,6 +120,7 @@
         height: 400,
         count: 5,
         data: img,
+        autoplay: true,
     })
 </script>
 
