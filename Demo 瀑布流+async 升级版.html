@@ -9,6 +9,7 @@
     <script src="js/ajax.js"></script>
     <script src="js/commonFunction.js"></script>
     <link rel="stylesheet" href="font/iconfont.css">
+    <link rel="stylesheet" href="css/animate.css">
     <style>
         * {
             margin: 0;
@@ -60,73 +61,6 @@
             height: 20px;
             padding-right: 5px;
             border-radius: 50%;
-        }
-
-        .spinner {
-            position: absolute;
-            bottom: -50px;
-            width: 100%;
-            height: 40px;
-            text-align: center;
-            font-size: 10px;
-        }
-
-        .spinner>div {
-            background-color: rgb(149, 140, 140);
-            height: 100%;
-            width: 6px;
-            display: inline-block;
-
-            -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
-            animation: sk-stretchdelay 1.2s infinite ease-in-out;
-        }
-
-        .spinner .rect2 {
-            -webkit-animation-delay: -1.1s;
-            animation-delay: -1.1s;
-        }
-
-        .spinner .rect3 {
-            -webkit-animation-delay: -1.0s;
-            animation-delay: -1.0s;
-        }
-
-        .spinner .rect4 {
-            -webkit-animation-delay: -0.9s;
-            animation-delay: -0.9s;
-        }
-
-        .spinner .rect5 {
-            -webkit-animation-delay: -0.8s;
-            animation-delay: -0.8s;
-        }
-
-        @-webkit-keyframes sk-stretchdelay {
-
-            0%,
-            40%,
-            100% {
-                -webkit-transform: scaleY(0.4)
-            }
-
-            20% {
-                -webkit-transform: scaleY(1.0)
-            }
-        }
-
-        @keyframes sk-stretchdelay {
-
-            0%,
-            40%,
-            100% {
-                transform: scaleY(0.4);
-                -webkit-transform: scaleY(0.4);
-            }
-
-            20% {
-                transform: scaleY(1.0);
-                -webkit-transform: scaleY(1.0);
-            }
         }
     </style>
 </head>
@@ -180,7 +114,7 @@
         async function itemin() {
 
             global_var.init = false;
-            loadAnimate('container', true);
+            loadAnimate('container', true, 'bottom');
             const fragment = document.createDocumentFragment();
             // 接收数据结果
             let response = await myAjax({
