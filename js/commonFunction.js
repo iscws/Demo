@@ -359,7 +359,10 @@ class Carousel {
         // 将图片添加到页面当中
         this.initCaro();
         // 将底部小圆点添加到页面
-        this.initCirle();
+
+        if (this.option.circle) {
+            this.initCirle();
+        }
         //让轮播图动起来
         this.moveCaro();
 
@@ -412,18 +415,24 @@ class Carousel {
         this.circle.appendChild(fragment);
     }
     moveCaro() {
-        for (let i = 0; i < this.option.count; i++) {
-            //点击下方悬浮按钮
-            this.circle.children[i].addEventListener('click', () => {
-                this.option.curr = i;
-                this.option.circleCurr = i;
-                this.goCar();
-            })
-        }
-        //点击左右按钮
-        this.nextBtn.addEventListener('click', this.nextCar.bind(this));
-        this.lastBtn.addEventListener('click', this.lastCar.bind(this));
 
+        if (this.option.circle) {
+            for (let i = 0; i < this.option.count; i++) {
+                //点击下方悬浮按钮
+                this.circle.children[i].addEventListener('click', () => {
+                    this.option.curr = i;
+                    this.option.circleCurr = i;
+                    this.goCar();
+                })
+            }
+        }
+
+        if (this.option.slider) {
+            //点击左右按钮
+            this.nextBtn.addEventListener('click', this.nextCar.bind(this));
+            this.lastBtn.addEventListener('click', this.lastCar.bind(this));
+
+        }
         if (this.option.autoplay)
             this.autoplayCaro();
     }
@@ -444,10 +453,10 @@ class Carousel {
                 this.imgContainer.style.left = 0;
             }, 500)
         }
-        clearOther(this.circle, 'current');
-        this.circle.children[this.option.circleCurr].className = 'current';
-
-        // 关锁
+        if (this.option.circle) {
+            clearOther(this.circle, 'current');
+            this.circle.children[this.option.circleCurr].className = 'current';
+        }
         Carousel.lock = false;
         setTimeout(() => {
             Carousel.lock = true;
@@ -480,8 +489,11 @@ class Carousel {
             this.imgContainer.style.left = -(this.option.curr) * this.option.width + 'px';
         }
 
-        clearOther(this.circle, 'current');
-        this.circle.children[this.option.circleCurr].className = 'current';
+
+        if (this.option.circle) {
+            clearOther(this.circle, 'current');
+            this.circle.children[this.option.circleCurr].className = 'current';
+        }
 
         // 关锁
         Carousel.lock = false;
@@ -492,8 +504,11 @@ class Carousel {
 
     goCar() {
         if (!Carousel.lock) return;
-        clearOther(this.circle, 'current');
-        this.circle.children[this.option.circleCurr].className = 'current';
+
+        if (this.option.circle) {
+            clearOther(this.circle, 'current');
+            this.circle.children[this.option.circleCurr].className = 'current';
+        }
         this.imgContainer.style.left = -(this.option.curr) * this.option.width + 'px';
 
         // 关锁
@@ -511,10 +526,12 @@ class Carousel {
 
         })
         // 保证鼠标经过按钮时也不会重启定时器
-        this.circle.addEventListener('mouseenter', () => {
-            clearInterval(timer);
-            timer = null;
-        })
+        if (this.option.circle) {
+            this.circle.addEventListener('mouseenter', () => {
+                clearInterval(timer);
+                timer = null;
+            })
+        }
         this.container.addEventListener('mouseleave', () => {
             // 先关掉定时器！！！！！！
             clearInterval(timer);
