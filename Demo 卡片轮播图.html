@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/base.css">
+    <script src="js/commonFunction.js"></script>
+    <link rel="stylesheet" href="css/animate.css">
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+
+    <style>
+        .container {
+            margin: 100px auto;
+            position: relative;
+            padding: 16px;
+            width: 1200px;
+            height: 300px;
+            box-shadow: 0 0 5px 5px #eee;
+            /* overflow: hidden; */
+        }
+
+        .caro-con {
+            position: absolute;
+            top: 16px;
+            left: 0;
+            width: 10000px;
+            height: 100%;
+        }
+
+        .caro-con>div {
+            float: left;
+            overflow: hidden;
+        }
+
+
+        /* 底部 */
+        .caro-cle-b {
+            position: absolute;
+            top: 80%;
+            left: 50%;
+            transform: translateX(-50%);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 10px 10px;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .caro-cle-b li {
+            float: left;
+            width: 15px;
+            height: 15px;
+            background-color: #fff;
+            margin: 0 20px;
+            border-radius: 50%;
+
+            transition: ease 0.5s;
+        }
+
+        .caro-cle-b .current {
+            transform: scaleX(3);
+            border-radius: 20%;
+            background-color: red;
+        }
+
+        .caro-sli-last {
+            left: 2%;
+        }
+
+        .caro-sli-next {
+            right: 2%;
+
+        }
+
+        [class^=caro-sli] {
+            position: absolute;
+            top: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+
+            background-color: rgba(0, 0, 0, 0.3);
+            font-size: 26px;
+            color: #fff;
+
+            cursor: pointer;
+        }
+
+
+        .bigbox {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            /* padding-left: 10px; */
+            margin-right: 16px;
+
+            width: 341px;
+            height: 268px;
+        }
+
+        .smallbox {
+            /* margin-bottom: 10px;
+            margin-left: 10px; */
+            width: 100%;
+            height: 126px;
+            background-size: 100% !important;
+
+            border-radius: 8px;
+        }
+
+        .firstbox {
+            width: 698px;
+            height: 268px;
+            margin-right: 16px;
+            border-radius: 8px;
+        }
+
+        .FboxCon {
+            width: 100%;
+            height: 100%;
+            background-size: cover !important;
+            background-position: -30px 0 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="container">
+        <div class="caro-con">
+
+        </div>
+
+        <ol class="caro-cle-b">
+        </ol>
+
+        <div class="caro-sli-last">&lt;</div>
+        <div class="caro-sli-next">&gt;</div>
+    </div>
+
+
+    <div class="here">
+
+
+    </div>
+
+</body>
+
+<script>
+    class Carousel2 {
+        //节流按钮
+        static lock = true;
+        static option = {
+            // 插入位置
+            node: '',
+            //是否需要下按钮的位置，默认已有按钮
+            circle: true,
+            //左右按钮
+            slider: true,
+            // 限定的宽高
+            width: 100,
+            height: 100,
+            //个数
+            count: 5,
+            // 自动播放 默认为否
+            autoplay: false,
+            //数据来源
+            data: '',
+            //当前页面,默认为0
+            curr: 0,
+            //小圆圈的当前页面
+            circleCurr: 0,
+            //显示的列数，默认为3（第一个占据两列）
+            display: 3,
+            // 列宽
+            rowWidth: 341,
+
+        }
+        constructor(options) {
+            this.option = Object.assign(Carousel2.option, options);
+            this.container = document.getElementById(this.option.node);
+            this.imgContainer = this.container.querySelector('.caro-con');
+
+            this.widthArr = [];
+            if (this.option.circle) {
+                this.circle = this.container.querySelector('.caro-cle-b');
+            }
+
+            if (this.option.slider) {
+                this.nextBtn = this.container.querySelector('.caro-sli-next');
+                this.lastBtn = this.container.querySelector('.caro-sli-last');
+            }
+
+            this.init();
+        }
+
+        init() {
+            //处理一下列数
+            this.initCount();
+            // 将item添加到页面当中
+            this.initCaro();
+            // 处理数据
+            // this.dealCaro();
+            // 将底部小圆点添加到页面
+            if (this.option.circle) {
+                this.initCirle();
+            }
+            //让轮播图动起来
+            // this.moveCaro();
+
+        }
+        initCount() {
+            const dataArr = this.option.data;
+            // 显示的列数
+            const display = this.option.display;
+            // console.log(display);
+            // console.log(dataArr);
+            if (dataArr.length <= 2)
+                this.option.count = 1;
+            else
+                this.option.count = Math.floor((dataArr.length) / 3 + 1);
+            // console.log(this.option.count);
+            // 当前列数
+            this.option.curr = display + 1;
+            // console.log(dataArr[0].clientWidth, 11111);
+
+
+        }
+
+
+        initCaro() {
+            const display = this.option.display;
+            // console.log(display);
+            // console.log(this.container);
+            // 过渡动画
+            loadAnimate(this.option.node, true, 'center');
+            Carousel2.lock = false;
+            //给盒子初始化宽度
+            const conWidth = (this.option.count + 2) * this.option.width;
+            this.imgContainer.style.width = conWidth + 'px';
+            this.imgContainer.style.transition = '0.5s ease';
+
+            // 列数
+            const length = this.option.data.length;
+
+
+            const fragment = document.createDocumentFragment();
+            for (let value of this.option.data) {
+                fragment.appendChild(value);
+            }
+            // console.log(fragment);
+
+            // 克隆节点
+            let item = fragment.children[0].cloneNode(true);
+            let i = 0, j = 0;
+            while (i != display) {
+                let item = fragment.children[i].cloneNode(true);
+                // console.log(item);
+                fragment.appendChild(item);
+
+                i++;
+            }
+            while (j != display + 1) {
+                let item = fragment.children[length - 1].cloneNode(true);
+                // console.log(item, fragment.children[0]);
+                fragment.insertBefore(item, fragment.children[0]);
+                j++;
+            }
+
+            console.log(fragment.children[0].className);
+            for (let i = 0; i < fragment.children.length; i++) {
+                let cName = fragment.children[i].className;
+                if (cName == 'bigbox') (this.widthArr).push(this.option.rowWidth + 16);
+                else this.widthArr.push(this.option.rowWidth * 2);
+            }
+
+
+            // fragment.appendChild(item);
+            let middle = 0;
+            this.option.curr = this.option.curr + 2;
+            for (let i = 0; i < this.option.curr - 1; i++) {
+                middle += this.widthArr[i];
+            }
+            // middle = middle + (341 - 71.5);
+            // this.imgContainer.style.left = -middle + 'px';
+            // // 关闭动画
+            loadAnimate(this.option.node, false, 'center');
+            Carousel2.lock = true;
+
+            this.imgContainer.appendChild(fragment);
+
+
+        }
+
+        initCirle() {
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < this.option.count; i++) {
+                let li = document.createElement('li');
+                fragment.appendChild(li);
+            }
+            fragment.children[0].classList.add('current');
+            this.circle.appendChild(fragment);
+        }
+        moveCaro() {
+
+            if (this.option.circle) {
+                for (let i = 0; i < this.option.count; i++) {
+                    //点击下方悬浮按钮
+                    this.circle.children[i].addEventListener('click', () => {
+                        this.option.curr = i;
+                        this.option.circleCurr = i;
+                        this.goCar();
+                    })
+                }
+            }
+
+            if (this.option.slider) {
+                //点击左右按钮
+                this.nextBtn.addEventListener('click', this.nextCar.bind(this));
+                this.lastBtn.addEventListener('click', this.lastCar.bind(this));
+
+            }
+            if (this.option.autoplay)
+                this.autoplayCaro();
+        }
+        nextCar() {
+            if (!Carousel2.lock) return;
+            this.option.curr++;
+            this.option.circleCurr++;
+
+            //移动轮播图
+            this.imgContainer.style.left = -(this.option.curr) * this.option.width + 'px';
+            this.imgContainer.style.transition = "ease 0.5s";
+            //判断临界值
+            if (this.option.curr == this.option.count) {
+                this.option.circleCurr = 0;
+                this.option.curr = 0;
+                setTimeout(() => {
+                    this.imgContainer.style.transition = "none";
+                    this.imgContainer.style.left = 0;
+                }, 500)
+            }
+            if (this.option.circle) {
+                clearOther(this.circle, 'current');
+                this.circle.children[this.option.circleCurr].className = 'current';
+            }
+            Carousel2.lock = false;
+            setTimeout(() => {
+                Carousel2.lock = true;
+            }, 500);
+        }
+
+        lastCar() {
+            if (!Carousel2.lock) return;
+
+            this.option.curr--;
+            this.option.circleCurr--;
+            // 页面从第一张到最后一张
+            if (this.option.curr == -1) {
+                //更新下方圆圈和当前页面的下标
+                this.option.circleCurr = this.option.count - 1;
+                this.option.curr = this.option.count - 1;
+
+                //关闭动画
+                this.imgContainer.style.transition = "none";
+                //将容器移动至最后一张假图片
+                this.imgContainer.style.left = -(this.option.count) * this.option.width + 'px';
+                setTimeout(() => {
+                    this.imgContainer.style.left = -(this.option.curr) * this.option.width + 'px';
+                    this.imgContainer.style.transition = "ease 0.5s";
+
+                }, 0)
+            }
+            else {
+                this.imgContainer.style.transition = "ease 0.5s";
+                this.imgContainer.style.left = -(this.option.curr) * this.option.width + 'px';
+            }
+
+
+            if (this.option.circle) {
+                clearOther(this.circle, 'current');
+                this.circle.children[this.option.circleCurr].className = 'current';
+            }
+
+            // 关锁
+            Carousel2.lock = false;
+            setTimeout(() => {
+                Carousel2.lock = true;
+            }, 500);
+        }
+
+        goCar() {
+            if (!Carousel2.lock) return;
+
+            if (this.option.circle) {
+                clearOther(this.circle, 'current');
+                this.circle.children[this.option.circleCurr].className = 'current';
+            }
+            this.imgContainer.style.left = -(this.option.curr) * this.option.width + 'px';
+
+            // 关锁
+            Carousel2.lock = false;
+            setTimeout(() => {
+                Carousel2.lock = true;
+            }, 500);
+        }
+
+        autoplayCaro() {
+            let timer = setInterval(this.nextCar.bind(this), 2000);
+            this.container.addEventListener('mouseenter', () => {
+                clearInterval(timer);
+                timer = null;
+
+            })
+            // 保证鼠标经过按钮时也不会重启定时器
+            if (this.option.circle) {
+                this.circle.addEventListener('mouseenter', () => {
+                    clearInterval(timer);
+                    timer = null;
+                })
+            }
+            this.container.addEventListener('mouseleave', () => {
+                // 先关掉定时器！！！！！！
+                clearInterval(timer);
+                timer = setInterval(this.nextCar.bind(this), 1000)
+            })
+        }
+    }
+
+    const sliderUrl = 'http://47.113.197.172:80/slideShow';
+
+
+    async function data(width, height) {
+        let container = document.querySelector('.caro-con');
+        let returnArr = [];
+        let { data: { data } } = await axios.get(sliderUrl);
+        // console.log(data[0]);
+        let arr1 = data.shift();;
+
+
+
+        // console.log(data[0]);
+
+        // 获取背景图片
+        let { pcLargeImage } = arr1;
+        let firstbox =
+            `
+        <div class="FboxCon" style="background:url(${pcLargeImage}) no-repeat;"></div>
+        `
+        let div = document.createElement('div');
+        div.className = 'firstbox';
+        div.insertAdjacentHTML('beforeend', firstbox);
+
+        returnArr.push(div);
+        for (let i = 0; i < data.length - 1; i = i + 2) {
+            let div = document.createElement('div');
+            div.className = 'bigbox';
+            for (let j = i; j < i + 2; j++) {
+                // console.log(data[j]);
+                // console.log(j);
+                if (j == data.length) break;
+                let box = `
+                <div class="smallbox" style="background:url('${data[j].pcLargeImage}') no-repeat;"></div>
+                `
+                div.insertAdjacentHTML('beforeend', box);
+
+            }
+            // console.log(i);
+            returnArr.push(div);
+
+        }
+
+        for (let i = 0; i < returnArr.length; i++) {
+
+            // container.appendChild(returnArr[i]);
+        }
+
+        new Carousel2({
+            node: 'container',
+            // 限定的宽高
+            width: 1200,
+            height: 300,
+            //图片列数
+            count: returnArr.length,
+            // 自动播放 默认为否
+            autoplay: false,
+            //图片来源
+            data: returnArr,
+            //
+            rowWidth: 341,
+        })
+    }
+    data();
+</script>
+
+</html>
