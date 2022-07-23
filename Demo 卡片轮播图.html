@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/animate.css">
 
     <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="js/carousel.js"></script>
 
 
     <style>
@@ -21,7 +22,7 @@
             width: 1200px;
             height: 300px;
             box-shadow: 0 0 5px 5px #eee;
-            /* overflow: hidden; */
+            overflow: hidden;
         }
 
         .caro-con {
@@ -166,7 +167,11 @@
 <body>
     <div class="container" id="container">
         <div class="caro-con">
-
+            <!-- <div class="firstbox caro-item trans">
+                <div class="FboxCon"
+                    style="background:url(https://s0.lgstatic.com/i/image/M00/8D/06/CgqCHl_286aAKwHDAAYQJLOfZY0609.png) no-repeat;">
+                </div>
+            </div> -->
         </div>
 
         <ol class="caro-cle-b">
@@ -188,64 +193,64 @@
     const sliderUrl = 'http://47.113.197.172:80/slideShow';
 
 
-    async function data(width, height) {
-        let container = document.querySelector('.caro-con');
-        let returnArr = [];
-        let { data: { data } } = await axios.get(sliderUrl);
+    // async function data(width, height) {
+    //     let container = document.querySelector('.caro-con');
+    //     let returnArr = [];
+    //     let { data: { data } } = await axios.get(sliderUrl);
 
-        let arr1 = data.shift();
+    //     let arr1 = data.shift();
 
-        // 获取背景图片
-        let { pcLargeImage } = arr1;
-        let firstbox =
-            `
-        <div class="FboxCon" style="background:url(${pcLargeImage}) no-repeat;"></div>
-        `
-        let div = document.createElement('div');
-        div.className = 'firstbox caro-item trans';
-        div.insertAdjacentHTML('beforeend', firstbox);
+    //     // 获取背景图片
+    //     let { pcLargeImage } = arr1;
+    //     let firstbox =
+    //         `
+    //     <div class="FboxCon" style="background:url(${pcLargeImage}) no-repeat;"></div>
+    //     `
+    //     let div = document.createElement('div');
+    //     div.className = 'firstbox caro-item trans';
+    //     div.insertAdjacentHTML('beforeend', firstbox);
 
-        returnArr.push(div);
+    //     returnArr.push(div);
 
-        let i = 0;
-        while (i != data.length) {
-            let div2 = document.createElement('div');
-            div2.className = 'bigbox caro-item trans';
-            for (let j = 0; j < 2; j++) {
-                // console.log(data[j]);
-                // console.log(j);
-                // console.log(i);
-                if (i >= data.length) break;
-                let box = `
-                <div class="smallbox" style="background:url('${data[i].pcLargeImage}') no-repeat;"></div>
-                `
-                div2.insertAdjacentHTML('beforeend', box);
-                i++;
-            }
+    //     let i = 0;
+    //     while (i != data.length) {
+    //         let div2 = document.createElement('div');
+    //         div2.className = 'bigbox caro-item trans';
+    //         for (let j = 0; j < 2; j++) {
+    //             // console.log(data[j]);
+    //             // console.log(j);
+    //             // console.log(i);
+    //             if (i >= data.length) break;
+    //             let box = `
+    //             <div class="smallbox" style="background:url('${data[i].pcLargeImage}') no-repeat;"></div>
+    //             `
+    //             div2.insertAdjacentHTML('beforeend', box);
+    //             i++;
+    //         }
 
-            returnArr.push(div2);
+    //         returnArr.push(div2);
 
-        }
-
-
+    //     }
 
 
-        new Carousel2({
-            node: 'container',
-            // 限定的宽高
-            width: 1200,
-            height: 300,
-            //图片列数
-            count: returnArr.length,
-            // 自动播放 默认为否
-            autoplay: false,
-            //图片来源
-            data: returnArr,
-            //每一列的宽度
-            rowWidth: 341,
-        })
-    }
-    data();
+
+    //     new Carousel2({
+    //         node: 'container',
+    //         // 限定的宽高
+    //         width: 1200,
+    //         height: 300,
+    //         //图片列数
+    //         count: returnArr.length,
+    //         // 自动播放 默认为否
+    //         autoplay: false,
+    //         //图片来源
+    //         data: returnArr,
+    //         //每一列的宽度
+    //         rowWidth: 341,
+    //     })
+    // }
+    // data();
+
 </script>
 
 </html>

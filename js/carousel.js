@@ -132,7 +132,7 @@ class Carousel2 {
         Carousel2.lock = true;
 
         this.imgContainer.appendChild(fragment);
-        初始化
+        // 初始化
         this.imgContainer.style.transition = "none";
         clearOther(this.imgContainer, 'trans');
         this.usualMove();
@@ -280,28 +280,23 @@ class Carousel2 {
         this.imgContainer.style.transition = "ease 0.5s";
         addAll(this.imgContainer, 'trans');
         this.usualMove();
-        // 页面从第一张到最后一张
 
-        if (this.option.curr < (this.option.display + 1)) {
+
+        //判断临界值
+        if (this.option.circleCurr == -1) {
             // 更新下方圆圈和当前页面的下标
             this.option.circleCurr = this.option.count - 1;
             // this.option.curr = this.option.count - 1;
-            moveCurr(this.option.count - 1);
+            this.moveCurr(this.option.count - 1);
+            console.log('当前应该在的列数是' + this.option.curr);
             //关闭动画
-
-
-            // //将容器移动至最后一张假图片
-
-            // this.imgContainer.style.left = - + 'px';
             setTimeout(() => {
                 this.imgContainer.style.transition = 'none';
                 clearOther(this.imgContainer, 'trans')
-                // this.moveCurr(this.option.circleCurr);
-                // this.usualMove();
                 this.usualMove();
 
             }, 500);
-            console.log(1);
+
         }
 
 
