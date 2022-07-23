@@ -117,8 +117,8 @@
             opacity: 1;
             transform: scale(1);
 
-
         }
+
 
         .smallbox {
             /* margin-bottom: 10px;
@@ -126,8 +126,24 @@
             width: 100%;
             height: 126px;
             background-size: 100% !important;
-
+            padding-top: 23px;
             border-radius: 8px;
+        }
+
+        .small-title {
+            margin: 0 0 11px 21px;
+            font-size: 18px;
+            color: #fff;
+            font-weight: 700;
+            line-height: 25px;
+        }
+
+        .small-brief {
+            font-size: 14px;
+            color: #eee;
+            line-height: 20px;
+            width: 194px;
+            margin-left: 21px;
         }
 
         .firstbox {
@@ -145,6 +161,43 @@
             background-size: cover !important;
             background-position: -30px 0 !important;
         }
+
+        .first-title {
+            padding: 36px 0 8px 32px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 36px;
+        }
+
+        .first-brief {
+            font-size: 18px;
+            color: hsla(0, 0%, 100%, .8);
+            line-height: 25px;
+            padding-left: 32px
+        }
+
+        .first-desc {
+            width: 463px;
+            height: 110px;
+            /* background: linear-gradient(270deg, hsla(0, 0%, 100%, 0), hsla(0, 0%, 100%, .09)); */
+
+            background: linear-gradient(to right, #59688d, #343f72);
+            border-radius: 7px;
+            margin-top: 37px;
+            margin-left: 20px;
+            padding: 11px 0 0 17px;
+        }
+
+        .first-desc ul li {
+            width: 220px;
+            color: #fff;
+            font-size: 14px;
+            line-height: 20px;
+            float: left;
+            margin-top: 16px;
+        }
+
 
         .opacity-left {
             transform: scale(.9);
@@ -171,6 +224,30 @@
                 <div class="FboxCon"
                     style="background:url(https://s0.lgstatic.com/i/image/M00/8D/06/CgqCHl_286aAKwHDAAYQJLOfZY0609.png) no-repeat;">
                 </div>
+            </div>
+            <div class="bigbox caro-item trans">
+                <div class="smallbox"
+                    style="background:url('https://s0.lgstatic.com/i/image6/M01/0F/73/Cgp9HWA9o0mAMKkgAAG1-s4c-VA804.png') no-repeat;">
+                    <div class="small-title">
+                        产品经理 P7 高薪特训营
+                    </div>
+                    <div class="small-brief">
+                        对标腾讯10+职级能力，成为能打能“赢”产品人
+                    </div>
+                </div>
+
+                <div class="smallbox"
+                    style="background:url('https://s0.lgstatic.com/i/image/M00/8E/EC/CgqCHmAGQgiAfqskAAClyQVZEpw724.png') no-repeat;">
+                    <div class="small-title">
+
+                        数据分析 P6 高薪特训营
+
+                    </div>
+                    <div class="small-brief">
+                        全方位构建数据分析能力，成为抢手人才
+
+                    </div>
+                </div>
             </div> -->
         </div>
 
@@ -193,63 +270,100 @@
     const sliderUrl = 'http://47.113.197.172:80/slideShow';
 
 
-    // async function data(width, height) {
-    //     let container = document.querySelector('.caro-con');
-    //     let returnArr = [];
-    //     let { data: { data } } = await axios.get(sliderUrl);
-
-    //     let arr1 = data.shift();
-
-    //     // 获取背景图片
-    //     let { pcLargeImage } = arr1;
-    //     let firstbox =
-    //         `
-    //     <div class="FboxCon" style="background:url(${pcLargeImage}) no-repeat;"></div>
-    //     `
-    //     let div = document.createElement('div');
-    //     div.className = 'firstbox caro-item trans';
-    //     div.insertAdjacentHTML('beforeend', firstbox);
-
-    //     returnArr.push(div);
-
-    //     let i = 0;
-    //     while (i != data.length) {
-    //         let div2 = document.createElement('div');
-    //         div2.className = 'bigbox caro-item trans';
-    //         for (let j = 0; j < 2; j++) {
-    //             // console.log(data[j]);
-    //             // console.log(j);
-    //             // console.log(i);
-    //             if (i >= data.length) break;
-    //             let box = `
-    //             <div class="smallbox" style="background:url('${data[i].pcLargeImage}') no-repeat;"></div>
-    //             `
-    //             div2.insertAdjacentHTML('beforeend', box);
-    //             i++;
-    //         }
-
-    //         returnArr.push(div2);
-
-    //     }
+    async function data(width, height) {
+        let container = document.querySelector('.caro-con');
+        let returnArr = [];
+        let { data: { data } } = await axios.get(sliderUrl);
+        console.log(data);
+        let arr1 = data.shift();
 
 
 
-    //     new Carousel2({
-    //         node: 'container',
-    //         // 限定的宽高
-    //         width: 1200,
-    //         height: 300,
-    //         //图片列数
-    //         count: returnArr.length,
-    //         // 自动播放 默认为否
-    //         autoplay: false,
-    //         //图片来源
-    //         data: returnArr,
-    //         //每一列的宽度
-    //         rowWidth: 341,
-    //     })
-    // }
-    // data();
+        // 获取背景图片,title
+        let { pcLargeImage, title, brief, brightPoints } = arr1;
+        let firstbox =
+            `
+        <div class="FboxCon" style="background:url(${pcLargeImage}) no-repeat;">
+            <div class="first-title">
+                       ${title}
+                    </div>
+                    <div class="first-brief">
+                        ${brief}
+                    </div>
+                    <div class="first-desc">
+                        <ul>
+                            <li>
+                                ${brightPoints[0]}
+                            </li>
+                            <li>
+                                ${brightPoints[1]}
+                            </li>
+                            <li>
+                                ${brightPoints[2]}
+                            </li>
+                            <li>
+                                ${brightPoints[3]}
+                            </li>
+
+                        </ul>
+                    </div>
+
+            </div>
+        `
+        let div = document.createElement('div');
+        div.className = 'firstbox caro-item trans';
+        div.insertAdjacentHTML('beforeend', firstbox);
+
+        returnArr.push(div);
+
+        let i = 0;
+        while (i != data.length) {
+            let div2 = document.createElement('div');
+            div2.className = 'bigbox caro-item trans';
+            for (let j = 0; j < 2; j++) {
+                // console.log(data[j]);
+                // console.log(j);
+                // console.log(i);
+                if (i >= data.length) break;
+                let box = `
+                <div class="smallbox" style="background:url('${data[i].pcLargeImage}') no-repeat;">
+                    <div class="small-title">
+
+                        ${data[i].title}
+
+                    </div>
+                        <div class="small-brief">
+                            ${data[i].brief}
+
+                        </div>    
+                </div>
+                `
+                div2.insertAdjacentHTML('beforeend', box);
+                i++;
+            }
+
+            returnArr.push(div2);
+
+        }
+
+
+
+        new Carousel2({
+            node: 'container',
+            // 限定的宽高
+            width: 1200,
+            height: 300,
+            //图片列数
+            count: returnArr.length,
+            // 自动播放 默认为否
+            autoplay: false,
+            //图片来源
+            data: returnArr,
+            //每一列的宽度
+            rowWidth: 341,
+        })
+    }
+    data();
 
 </script>
 
