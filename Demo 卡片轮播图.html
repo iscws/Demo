@@ -21,7 +21,7 @@
             width: 1200px;
             height: 300px;
             box-shadow: 0 0 5px 5px #eee;
-            overflow: hidden;
+            /* overflow: hidden; */
         }
 
         .caro-con {
@@ -30,6 +30,8 @@
             left: 0;
             width: 10000px;
             height: 100%;
+
+            transition: all 0.5s;
         }
 
         .caro-con>div {
@@ -62,7 +64,7 @@
             margin: 0 20px;
             border-radius: 50%;
 
-            transition: ease 0.5s;
+            transition: 0.5s;
         }
 
         .caro-cle-b .current {
@@ -110,6 +112,11 @@
 
             width: 341px;
             height: 268px;
+
+            opacity: 1;
+            transform: scale(1);
+
+
         }
 
         .smallbox {
@@ -127,6 +134,8 @@
             height: 268px;
             margin-right: 16px;
             border-radius: 8px;
+            opacity: 1;
+            transform: scale(1);
         }
 
         .FboxCon {
@@ -134,6 +143,22 @@
             height: 100%;
             background-size: cover !important;
             background-position: -30px 0 !important;
+        }
+
+        .opacity-left {
+            transform: scale(.9);
+            transform-origin: right;
+            opacity: .16;
+        }
+
+        .opacity-right {
+            transform: scale(.9);
+            transform-origin: left;
+            opacity: .16;
+        }
+
+        .trans {
+            transition: all .5s ease;
         }
     </style>
 </head>
@@ -160,341 +185,6 @@
 </body>
 
 <script>
-    class Carousel2 {
-        //节流按钮
-        static lock = true;
-        static option = {
-            // 插入位置
-            node: '',
-            //是否需要下按钮的位置，默认已有按钮
-            circle: true,
-            //左右按钮
-            slider: true,
-            // 限定的宽高
-            width: 100,
-            height: 100,
-            //个数
-            count: 5,
-            // 自动播放 默认为否
-            autoplay: false,
-            //数据来源
-            data: '',
-            //当前页面,默认为0
-            curr: 1,
-            //小圆圈的当前页面
-            circleCurr: 0,
-            //显示的列数，默认为3（第一个占据两列）
-            display: 3,
-            // 列宽
-            rowWidth: 341,
-
-        }
-        constructor(options) {
-            this.option = Object.assign(Carousel2.option, options);
-            this.container = document.getElementById(this.option.node);
-            this.imgContainer = this.container.querySelector('.caro-con');
-
-            this.widthArr = [];
-            // 每次需要移动的列数
-            this.moveRow = [];
-            if (this.option.circle) {
-                this.circle = this.container.querySelector('.caro-cle-b');
-            }
-
-            if (this.option.slider) {
-                this.nextBtn = this.container.querySelector('.caro-sli-next');
-                this.lastBtn = this.container.querySelector('.caro-sli-last');
-            }
-
-            this.init();
-        }
-
-        init() {
-            //处理一下列数
-            this.initCount();
-            // 将item添加到页面当中
-            this.initCaro();
-            // 处理数据
-            // this.dealCaro();
-            // 将底部小圆点添加到页面
-            if (this.option.circle) {
-                this.initCirle();
-            }
-            // 让轮播图动起来
-            this.moveCaro();
-
-        }
-        initCount() {
-            const dataArr = this.option.data;
-            // 显示的列数
-            const display = this.option.display;
-            // console.log(display);
-            // console.log(dataArr);
-            console.log((dataArr.length - 2) % 3);
-            if (dataArr.length <= 2)
-                this.option.count = 1;
-            else
-                this.option.count = Math.floor((dataArr.length) / 3 + 1);
-            console.log(this.option.count);
-
-            // 当前所在列数，初始为0
-            this.option.curr = display + 1;
-            // console.log(dataArr[0].clientWidth, 11111);
-
-
-        }
-
-
-        initCaro() {
-            const display = this.option.display;
-            // console.log(display);
-            // console.log(this.container);
-            // 过渡动画
-            loadAnimate(this.option.node, true, 'center');
-            Carousel2.lock = false;
-            //给盒子初始化宽度
-            const conWidth = (this.option.count + 3) * this.option.width;
-            this.imgContainer.style.width = conWidth + 'px';
-            this.imgContainer.style.transition = '0.5s ease';
-
-            // 列数
-            const length = this.option.data.length;
-
-
-            const fragment = document.createDocumentFragment();
-            for (let value of this.option.data) {
-                fragment.appendChild(value);
-            }
-            // console.log(fragment);
-
-            // 克隆节点
-            let item = fragment.children[0].cloneNode(true);
-            let i = 0, j = 0;
-            while (i != display) {
-                let item = fragment.children[i].cloneNode(true);
-                // console.log(item);
-                fragment.appendChild(item);
-
-                i++;
-            }
-            while (j != display + 1) {
-                let item = fragment.children[length - 1].cloneNode(true);
-                // console.log(item, fragment.children[0]);
-                fragment.insertBefore(item, fragment.children[0]);
-                j++;
-            }
-
-            for (let i = 0; i < fragment.children.length; i++) {
-                let cName = fragment.children[i].className;
-                if (cName == 'bigbox') (this.widthArr).push(this.option.rowWidth + 16);
-                else this.widthArr.push(this.option.rowWidth * 2 + 32);
-            }
-
-
-            // fragment.appendChild(item);
-            let middle = 0;
-            for (let i = 0; i < this.option.curr - 1; i++) {
-                //357是每一列的宽度加上外边距16
-                //72.5是边距
-                middle += 357;
-                if (i + 1 == this.option.curr - 1)
-                    middle += (357 - 72.5);
-
-            }
-            this.imgContainer.style.left = -middle + 'px';
-            // // 关闭动画
-            loadAnimate(this.option.node, false, 'center');
-            Carousel2.lock = true;
-
-            this.imgContainer.appendChild(fragment);
-
-
-        }
-
-        initCirle() {
-            const fragment = document.createDocumentFragment();
-            for (let i = 0; i < this.option.count; i++) {
-                let li = document.createElement('li');
-                fragment.appendChild(li);
-            }
-            fragment.children[0].classList.add('current');
-            this.circle.appendChild(fragment);
-        }
-        moveCaro() {
-
-            if (this.option.circle) {
-                for (let i = 0; i < this.option.count; i++) {
-                    //点击下方悬浮按钮
-                    this.circle.children[i].addEventListener('click', () => {
-                        this.moveCurr(i);
-                        console.log('页数' + this.option.curr);
-                        this.option.circleCurr = i;
-                        this.goCar();
-                    })
-                }
-            }
-
-            if (this.option.slider) {
-                //点击左右按钮
-                this.nextBtn.addEventListener('click', this.nextCar.bind(this));
-                this.lastBtn.addEventListener('click', this.lastCar.bind(this));
-
-            }
-            if (this.option.autoplay)
-                this.autoplayCaro();
-        }
-        moveCurr(i) {
-            this.option.curr = this.option.display + 1;
-            for (let j = 0; j < i; j++) {
-                if (j == this.option.count - 2) {
-                    this.option.curr += (this.option.data.length - 2) % 3;
-                    continue;
-                }
-
-                this.option.curr += 3;
-
-            }
-        }
-        nextCar() {
-            if (!Carousel2.lock) return;
-
-            this.option.circleCurr++;
-            this.moveCurr(this.option.circleCurr);
-
-            //移动轮播图
-            let middle = 0;
-            for (let i = 0; i < this.option.curr - 1; i++) {
-                //357是每一列的宽度加上外边距16
-                //72.5是边距
-                middle += 357;
-                if (i + 1 == this.option.curr - 1)
-                    middle += (357 - 72.5);
-
-            }
-            this.imgContainer.style.left = -middle + 'px';
-
-            this.imgContainer.style.transition = "ease 0.5s";
-            //判断临界值
-            if (this.option.curr == this.option.count) {
-                this.option.circleCurr = 0;
-                this.option.curr = 0;
-                setTimeout(() => {
-                    this.imgContainer.style.transition = "none";
-                    this.imgContainer.style.left = 0;
-                }, 500)
-            }
-            if (this.option.circle) {
-                clearOther(this.circle, 'current');
-                this.circle.children[this.option.circleCurr].className = 'current';
-            }
-            Carousel2.lock = false;
-            setTimeout(() => {
-                Carousel2.lock = true;
-            }, 500);
-        }
-
-        lastCar() {
-            // console.log(1);
-            if (!Carousel2.lock) return;
-
-            this.option.circleCurr--;
-            this.moveCurr(this.option.circleCurr);
-
-            //移动轮播图
-            let middle = 0;
-            for (let i = 0; i < this.option.curr - 1; i++) {
-                //357是每一列的宽度加上外边距16
-                //72.5是边距
-                middle += 357;
-                if (i + 1 == this.option.curr - 1)
-                    middle += (357 - 72.5);
-
-            }
-            this.imgContainer.style.left = -middle + 'px';
-
-            // 页面从第一张到最后一张
-            if (this.option.curr == -1) {
-                //更新下方圆圈和当前页面的下标
-                this.option.circleCurr = this.option.count - 1;
-                this.option.curr = this.option.count - 1;
-
-                //关闭动画
-                this.imgContainer.style.transition = "none";
-                //将容器移动至最后一张假图片
-                this.imgContainer.style.left = -(this.option.count) * this.option.width + 'px';
-                setTimeout(() => {
-                    this.imgContainer.style.left = -(this.option.curr) * this.option.width + 'px';
-                    this.imgContainer.style.transition = "ease 0.5s";
-
-                }, 0)
-            }
-            else {
-                this.imgContainer.style.transition = "ease 0.5s";
-                // this.imgContainer.style.left = -(this.option.curr) * this.option.width + 'px';
-            }
-
-
-            if (this.option.circle) {
-                clearOther(this.circle, 'current');
-                this.circle.children[this.option.circleCurr].className = 'current';
-            }
-
-            // 关锁
-            Carousel2.lock = false;
-            setTimeout(() => {
-                Carousel2.lock = true;
-            }, 500);
-        }
-
-        goCar() {
-            if (!Carousel2.lock) return;
-
-            if (this.option.circle) {
-                clearOther(this.circle, 'current');
-                this.circle.children[this.option.circleCurr].className = 'current';
-            }
-
-            // this.imgContainer.style.left = -(this.option.curr) * this.option.width + 'px';
-            let middle = 0;
-            for (let i = 0; i < this.option.curr - 1; i++) {
-                //357是每一列的宽度加上外边距16
-                //72.5是边距
-                middle += 357;
-                if (i + 1 == this.option.curr - 1)
-                    middle += (357 - 72.5);
-
-            }
-            this.imgContainer.style.left = -middle + 'px';
-
-            // 关锁
-            Carousel2.lock = false;
-            setTimeout(() => {
-                Carousel2.lock = true;
-            }, 500);
-        }
-
-        autoplayCaro() {
-            let timer = setInterval(this.nextCar.bind(this), 2000);
-            this.container.addEventListener('mouseenter', () => {
-                clearInterval(timer);
-                timer = null;
-
-            })
-            // 保证鼠标经过按钮时也不会重启定时器
-            if (this.option.circle) {
-                this.circle.addEventListener('mouseenter', () => {
-                    clearInterval(timer);
-                    timer = null;
-                })
-            }
-            this.container.addEventListener('mouseleave', () => {
-                // 先关掉定时器！！！！！！
-                clearInterval(timer);
-                timer = setInterval(this.nextCar.bind(this), 1000)
-            })
-        }
-    }
-
     const sliderUrl = 'http://47.113.197.172:80/slideShow';
 
 
@@ -512,16 +202,15 @@
         <div class="FboxCon" style="background:url(${pcLargeImage}) no-repeat;"></div>
         `
         let div = document.createElement('div');
-        div.className = 'firstbox';
+        div.className = 'firstbox caro-item trans';
         div.insertAdjacentHTML('beforeend', firstbox);
 
         returnArr.push(div);
 
-        console.log(data);
         let i = 0;
         while (i != data.length) {
             let div2 = document.createElement('div');
-            div2.className = 'bigbox';
+            div2.className = 'bigbox caro-item trans';
             for (let j = 0; j < 2; j++) {
                 // console.log(data[j]);
                 // console.log(j);
@@ -552,7 +241,7 @@
             autoplay: false,
             //图片来源
             data: returnArr,
-            //
+            //每一列的宽度
             rowWidth: 341,
         })
     }

@@ -104,6 +104,18 @@ function clearOther(container, name) {
         }
     }
 }
+function addAll(container, name) {
+    let item = container.children;
+    for (let i = 0; i < item.length; i++) {
+        if (name) {
+            item[i].classList.add(name);
+        }
+        else {
+            item[i].style.display = 'none';
+        }
+    }
+}
+
 // 利用promise：只有图片加载完毕才退出异步
 function loadImg(src) {
     return new Promise((resolve, reject) => {
