@@ -35,9 +35,11 @@ class Carousel2 {
         this.widthArr = [];
         // 每次需要移动的列数
         this.moveRow = [];
-        if (this.option.circle) {
+        if (this.option.circle == true) {
             this.circle = this.container.querySelector('.caro-cle-b');
         }
+        else
+            this.circle = document.getElementById(this.option.circle);
 
         if (this.option.slider) {
             this.nextBtn = this.container.querySelector('.caro-sli-next');
