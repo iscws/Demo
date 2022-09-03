@@ -80,6 +80,7 @@
         ul.addEventListener('click', (ev) => {
             let target = ev.target;
             while (target !== ul) {
+
                 if (target.className.toLowerCase() == 'item') {
                     console.log(target);
                     break;
