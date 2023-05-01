@@ -65,9 +65,7 @@ doms.selectFile.onchange = function (e) {
 
 // 取消请求;
 doms.cancelBtn.onclick = function (e) {
-  console.log(111);
   xhr.abort();
   showArea("select");
   doms.img.src = "";
 };
-console.log(doms.cancelBtn.onClick);
