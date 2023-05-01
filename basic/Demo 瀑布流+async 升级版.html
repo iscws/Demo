@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/ajax.js"></script>
+    <script src="js/commonFunction.js"></script>
+    <link rel="stylesheet" href="font/iconfont.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin: 0 auto;
+            height: auto;
+            position: relative;
+        }
+
+        .item {
+            width: 150px;
+            height: auto;
+            padding: 10px 10px 5px 10px;
+            position: absolute;
+            transition: all .5s ease-in-out;
+            border: 1px solid #eee;
+            box-shadow: 0 0 5px 5px #eee;
+        }
+
+
+        .item .picture img {
+            width: 100%;
+        }
+
+        .name {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        .name::after {
+            content: ' ';
+            font-family: 'iconfont';
+
+            position: absolute;
+            right: 0;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+        }
+
+        .head {
+            width: 20px;
+            height: 20px;
+            padding-right: 5px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="text-align: center; margin:50px 0;font-weight: 100;"> 瀑布流升级版 </h1>
+
+    <div id="container" class="container">
+    </div>
+
+
+    <script>
+        // 需要用到的全局变量
+        let global_var = {
+            // 判断变量，防止多次触发 
+            init: true,
+            //错误次数
+            NUM_RETRIES: 3,
+            url: ' http://localhost:3000',
+        }
+
+
+        // 底部无限加载
+        window.addEventListener('scroll', throttle(() => {
+            // 获取到所有子元素
+            let item = document.getElementsByClassName('item');
+            // 当页面滚轮到最后一个元素时发送请求加载数据
+            if (item[item.length - 1].getBoundingClientRect().top < window.innerHeight && global_var.init == true) {
+                itemin(global_var.init);
+            }
+        }, 300))
+
+
+
+        function item1(title, avatar, name,) {
+            return `            
+                <div class="user">
+                    <h4 class="title">${title}</h4>
+                    <div class="name">
+                        <img class="head" src="${avatar}">
+                        <p>${name}</p>
+                    </div>
+                </div>
+
+            `;
+        }
+        let container = document.getElementById('container');
+        let img = document.getElementById('img');
+
+
+        async function itemin() {
+
+            global_var.init = false;
+            loadAnimate('container', true, 'bottom');
+            const fragment = document.createDocumentFragment();
+            // 接收数据结果
+            let response = await myAjax({
+                url: global_var.url + '/comments',
+                method: "get",
+            });
+
+            // 遍历获取数据，添加到内存空间当中
+            await Promise.all(response.map(async value => {
+                // 获得文章基本信息
+                let { authorId, content, images } = value;
+
+                // 根据文章信息获取作者信息
+                let authorInfor = await myAjax({
+                    url: global_var.url + '/authorBase',
+                    method: 'get',
+                    data: {
+                        authorId: authorId,
+                    }
+                });
+
+                // 获取作者头像和昵称
+                let { nickname, avatar } = authorInfor[0];
+
+
+                let itemAdd = item1(content, avatar, nickname);
+
+                // 创造一个item节点
+                let item = document.createElement('div');
+                let picture = document.createElement('div');
+
+                item.className = 'item';
+                picture.className = 'picture';
+
+
+                // 等到图片加载完成就添加到盒子里,如果发生错误则重试3次
+                for (let i = 0; i < global_var.NUM_RETRIES; ++i) {
+                    try {
+                        let finishLoadImg = await loadImg(images);
+                        picture.appendChild(finishLoadImg);
+                        break;
+                    } catch (error) {
+
+                    }
+                }
+
+
+                // 将初始化后的数据丢到盒子里
+                item.appendChild(picture);//放照片
+                item.insertAdjacentHTML('beforeend', itemAdd);//放文章和作者信息
+
+                fragment.appendChild(item);
+
+
+            }))
+
+            container.appendChild(fragment);
+            // 执行瀑布流函数
+            waterFall('container');
+            //执行加载函数
+            loadAnimate('container', false);
+            global_var.init = true;
+
+
+        }
+
+
+        itemin();
+
+
+        class waterF {
+            constructor() {
+                console.log(11);
+                this.item();
+            }
+
+            async item() {
+                let response = await myAjax({
+                    url: global_var.url + '/comments',
+                    method: "get",
+                });
+
+                console.log(response, 1111);
+            }
+        }
+
+        new waterF();
+    </script>
+</body>
+
+</html>

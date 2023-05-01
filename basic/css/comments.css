@@ -1,0 +1,88 @@
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    list-style-type: none;
+
+}
+
+.container {
+    margin: 0 auto;
+    width: 414px;
+    height: 100vh;
+}
+
+li {
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    box-shadow: 5px 5px 30px 3px #dedede;
+    /* background-color: pink; */
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 8px;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+}
+
+img {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+}
+
+.infor {
+    padding-left: 20px;
+}
+
+.nickname {
+    font-size: 20px;
+}
+
+.exp {
+    font-size: 14px;
+    color: #8a919f;
+}
+
+.comment {
+    padding: 10px 25px 15px 25px;
+}
+
+.detail {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+
+    border-top: 1px solid #d2d3d6;
+}
+
+.detail>span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.detail>span p {
+    padding-left: 8px;
+}
+
+.deletebtn::before {
+    content: '';
+    font-family: 'iconfont';
+    cursor: pointer;
+}
+
+.current {
+    color: blue;
+}

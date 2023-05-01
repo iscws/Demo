@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        li {
+            width: 300px;
+            padding: 0 10px;
+            margin: 5px 0;
+            background-color: pink;
+            display: flex;
+            justify-content: space-between;
+
+        }
+
+        span {
+            padding: 5px 5px;
+            background-color: purple;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #BTN {
+            display: block;
+            margin-left: 35px;
+            margin-top: 100px;
+            width: 100px;
+            height: 25px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="list" id="ul">
+        <li class="item" id="12">
+            <span>获取id的按钮</span>
+            <i>按钮</i>
+        </li>
+
+        <li class="item" id="32">
+            <span>获取id的按钮</span>
+            <i>按钮</i>
+        </li>
+
+        <li class="item" id="45">
+            <span>获取id的按钮</span>
+            <i>按钮</i>
+        </li>
+
+        <li class="item" id="75">
+            <span>获取id的按钮</span>
+            <i>按钮</i>
+        </li>
+
+        <li class="item" id="47">
+            <span>获取id的按钮</span>
+            <i>按钮</i>
+        </li>
+    </ul>
+
+    <button id="BTN">增加li的个数</button>
+    <script>
+
+        let ul = document.getElementById('ul');
+        let btn = document.getElementById('BTN');
+        ul.addEventListener('click', (ev) => {
+            let target = ev.target;
+            while (target !== ul) {
+
+                if (target.className.toLowerCase() == 'item') {
+                    console.log(target);
+                    break;
+                }
+
+                target = target.parentNode;
+
+            }
+        })
+
+        // 递归获取他的id号码
+        function digui(father, son) {
+
+        }
+        btn.onclick = () => {
+            let item = `
+         <li class="item" id="${selectFrom(10, 30)}}">
+            <span>获取id的按钮</span>
+            <i>按钮</i>
+        </li>`
+            ul.insertAdjacentHTML('beforeend', item);
+        }
+
+
+
+        //获取随机数
+        function selectFrom(minValue, maxValue) {
+            // 通过最大值减去最小值然后加1得到取值的范围可能值的总数
+            // 例如取2到10之间的整数，10-2 = 8
+            var choices = maxValue - minValue;
+            // 然后通过随机数乘以刚才的到的值，
+            // 例如：Math.random() * 8，由于得到的是小于1的随机数，所以随机最大值0.99*8得到的数始终小于8
+            // 然后使用floor方法向下取正得到的数最大值就是7，然后再加上最小值
+            return Math.floor(Math.random() * choices + minValue);
+        }
+
+    </script>
+</body>
+
+
+</html>

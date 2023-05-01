@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/changePage.css">
+    <script src="js/ajax.js"></script>
+    <script src="js/commonFunction.js"></script>
+</head>
+
+<body>
+    <div class="container" id="container">
+
+    </div>
+
+    <ol class="page-change" id="btn">
+        <button class="last unique"> &lt; 上一页</button>
+        <ul id="main" class="main">
+
+        </ul>
+        <button class="next unique">下一页 &gt; </button>
+    </ol>
+
+
+
+    <script>
+
+        //btn为添加的位置的id
+        new Pages({
+            //插入的位置
+            node: 'btn',
+            //页面的位置
+            container: 'container',
+            // 数据总数
+            count: 10,
+            // 当前页码（选填，默认为1）
+            curr: 1,
+            pageShow: 3,
+            // 当前页前后两边可显示的页码个数（选填，默认为2）
+        })
+
+        function changeBtnAllow(node, className, flag) {
+            if (flag) {
+                node.classList.add(className);
+                node.disabled = false;
+            }
+            else {
+                node.classList.remove(className);
+                node.disabled = true;
+            }
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+</head>
+
+<body>
+    <h1>hello world</h1>
+    <a href="" download=""></a>
+    <script>
+        const instance = axios.create({
+            baseURL: 'http://42.193.146.201:8989',
+        });
+
+        // instance.interceptors.response.use(res => {
+        //     // 未设置状态码则默认成功状态
+        //     const code = res.data.code || 200;
+        //     if (res.headers['content-disposition']) { //将响应文件名信息直接添加挂载rea.data
+        //         res.data.contentDisposition = res.headers['content-disposition']
+        //     }
+        //     console.log(res.headers['content-disposition']);
+        //     return res
+        // }, error => {
+        //     return Promise.reject(error)
+        // }
+        // )
+
+        instance.get("/fileDownload", {
+            responseType: 'blob'
+        }).then(res => {
+            console.log(res.data);
+            const blob = new Blob([res.data]);
+            let url = window.URL.createObjectURL(blob)
+
+            const fileName = '中文.png'  // 文件名+后缀
+
+            const listNode = document.createElement("a")
+            listNode.download = fileName
+            listNode.style.display = "none"
+            listNode.href = url // 文件流生成的url
+            document.body.appendChild(listNode)
+            listNode.click()  // 模拟在按钮上实现一次鼠标点击
+            window.URL.revokeObjectURL(listNode.href)  // 释放 URL 对象
+            document.body.removeChild(listNode)  // 移除 a 标签
+
+
+        })
+
+    </script>
+</body>
+
+</html>

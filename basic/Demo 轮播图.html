@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/base.css">
+    <script src="js/commonFunction.js"></script>
+    <link rel="stylesheet" href="css/animate.css">
+    <style>
+        .container {
+            margin: 100px auto;
+            position: relative;
+            width: 800px;
+            height: 400px;
+            box-shadow: 0 0 5px 5px #eee;
+            /* overflow: hidden; */
+        }
+
+        .caro-con {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+        }
+
+        .caro-con li {
+            float: left;
+            overflow: hidden;
+        }
+
+
+        /* 底部 */
+        .caro-cle-b {
+            position: absolute;
+            top: 80%;
+            left: 50%;
+            transform: translateX(-50%);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 10px 10px;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .caro-cle-b li {
+            float: left;
+            width: 15px;
+            height: 15px;
+            background-color: #fff;
+            margin: 0 20px;
+            border-radius: 50%;
+
+            transition: ease 0.5s;
+        }
+
+        .caro-cle-b .current {
+            transform: scaleX(3);
+            border-radius: 20%;
+            background-color: red;
+        }
+
+        .caro-sli-last {
+            left: 2%;
+        }
+
+        .caro-sli-next {
+            right: 2%;
+
+        }
+
+        [class^=caro-sli] {
+            position: absolute;
+            top: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+
+            background-color: rgba(0, 0, 0, 0.3);
+            font-size: 26px;
+            color: #fff;
+
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" id="container">
+        <ul class="caro-con">
+        </ul>
+
+        <ol class="caro-cle-b">
+        </ol>
+
+        <div class="caro-sli-last">&lt;</div>
+        <div class="caro-sli-next">&gt;</div>
+    </div>
+
+</body>
+<script>
+    let img = ['https://raw.githubusercontent.com/cwscrsj/typoraImges/main/img/202206161746522.png',
+        "https://raw.githubusercontent.com/cwscrsj/typoraImges/main/img/202206161747097.png", "https://raw.githubusercontent.com/cwscrsj/typoraImges/main/img/202206161747000.png", "https://github.com/cwscrsj/typoraImges/blob/main/img/202206121747006.png?raw=true", "https://github.com/cwscrsj/typoraImges/blob/main/img/202206121747588.png?raw=true"];
+
+    new Carousel({
+        node: 'container',
+        width: 800,
+        height: 400,
+        count: 5,
+        data: img,
+        autoplay: false,
+        slider: true,
+        circle: true,
+    })
+</script>
+
+</html>
