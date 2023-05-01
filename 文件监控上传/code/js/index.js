@@ -1,5 +1,5 @@
 const $ = document.getElementsByClassName.bind(document);
-console.log($("preview")[0]);
+
 // 将需要的dom元素保存起来
 const doms = {
   img: $("preview")[0],
@@ -66,6 +66,8 @@ doms.selectFile.onchange = function (e) {
 // 取消请求;
 doms.cancelBtn.onclick = function (e) {
   xhr.abort();
+
   showArea("select");
   doms.img.src = "";
+  doms.selectFile.value = null;
 };
