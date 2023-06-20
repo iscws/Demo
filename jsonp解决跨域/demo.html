@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button class="btn"> 点击发送请求</button>
+    <script>
+      function jsonPRequest(url) {
+        return new Promise((resolve) => {
+          // 回调函数的名字必须要随机
+          const funcName = `__callback__${Math.random()
+            .toString(36)
+            .slice(2)}__${Date.now()}`;
+
+          window[funcName] = function (resp) {
+            resolve(resp);
+            script.remove();
+            delete window[funcName];
+          };
+          const script = document.createElement('script');
+          script.src = url + '?callback=' + funcName;
+          document.body.appendChild(script);
+        });
+      }
+      // function callback (data) {
+        
+      //   }
+
+      //   document.querySelector('.btn').addEventListener('click',()=>{
+          
+      //     const script = document.createElement('script');
+      //   script.src = 'http://localhost:9527/jsonp';
+      //   document.body.appendChild(script);
+      //   })
+
+      jsonPRequest('http://localhost:9527/jsonp').then(res=>{
+        console.log(res);
+      });
+      
+    </script>
+  </body>
+</html>
