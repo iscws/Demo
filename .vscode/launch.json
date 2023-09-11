@@ -1,0 +1,11 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "调试 轮播图模块",
+            "file": "${workspaceFolder}/轮播图模块/code/index.html"
+        }
+    ]
+}
