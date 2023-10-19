@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #box {
+        height: 3000px;
+        width: 300px;
+        background-color: pink;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box">
+      <h1>测试节流</h1>
+    </div>
+  </body>
+
+  <script>
+    // 节流和防抖最大的区别在于，防抖是执行多次只执行最后一个，节流则是一定的时间内只执行一个，适用于一些需要频繁触发的事件，也就是单位时间内只能有一次触发事件，比如滚动事件
+    document.addEventListener(
+      "scroll",
+      throttle(() => {
+        console.log("滚动了");
+      })
+    );
+
+    // 采用时间戳的方式，精度更高一点
+    function throttle(fn, timeout = 1000) {
+      let previous = 0;
+      return function () {
+        const now = Date.now();
+        if (now - previous > timeout) {
+          fn.apply(this, arguments);
+          previous = now;
+        }
+      };
+    }
+  </script>
+</html>

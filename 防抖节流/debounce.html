@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="text" id="input" />
+    <script>
+      const input = document.querySelector("#input");
+      console.log(input);
+      input.addEventListener(
+        "input",
+        debounce((e) => {
+          console.log(e.target.value);
+        })
+      );
+
+      // 所谓防抖，指的是一段时间只执行一次,也就是多次执行变为最后一次执行,按钮的点击；收藏与点赞
+      function debounce(fn, timeout = 300) {
+        let timer;
+
+        return function () {
+          // 清除掉上一次的计时器，保证每次计时器都是最新的
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            // 添加apply的目的是为了防止在函数执行的过程中this指向被更改了，在这里不添加apply的话this会指向window
+            // 此外，call虽然也能改变this指向并立即执行，但call只能传递固定数量的参数，在这里传参的数量是不固定的
+            fn.apply(this, arguments);
+            // timer = null;
+          }, timeout);
+        };
+      }
+    </script>
+  </body>
+</html>
