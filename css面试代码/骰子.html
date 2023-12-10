@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      ol,
+      ul,
+      li {
+        list-style: none;
+      }
+      html,
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      :root {
+        --boxWidth: 200px;
+        --width: 25%;
+      }
+      .contanter {
+        perspective: 800px;
+      }
+      .dice {
+        transform-style: preserve-3d;
+        display: flex;
+        position: relative;
+        /* animation: run 0.1s linear infinite; */
+        width: var(--boxWidth);
+        height: var(--boxWidth);
+      }
+      .dice > div {
+        margin-right: 20px;
+        box-sizing: border-box;
+        width: var(--boxWidth);
+        height: var(--boxWidth);
+        background-color: #eee;
+        position: absolute;
+      }
+      .dice li {
+        width: var(--width);
+        height: var(--width);
+        background-color: #000;
+        border-radius: 50%;
+      }
+
+      .dice-font {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform: translateY(250px);
+      }
+      .dice-font > li {
+        width: 40%;
+        height: 40%;
+        background-color: red;
+      }
+
+      .dice-top {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      .dice-left {
+        padding: 4px;
+        display: flex;
+        justify-content: space-around;
+      }
+      .dice-left > li:first-child {
+        /* align-self: flex-end; */
+        align-self: flex-end;
+      }
+      .dice-left > li:nth-child(2) {
+        align-self: center;
+      }
+
+      .dice-right {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .dice-right > li {
+        margin: 25px;
+        background-color: red;
+      }
+
+      .dice-end {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .dice-end > li {
+        margin: 0 25px;
+      }
+      .dice-end > li:nth-of-type(3) {
+        margin: 0 75px;
+      }
+
+      .dice-bottom {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .dice-bottom > li {
+        margin: 0 18px;
+      }
+
+      .dice-top {
+        /* ...省略代码 */
+        transform: translateX(-250px);
+        /* transform: translateZ(-100px) translateY(-100px) rotateX(90deg); */
+      }
+      .dice-left {
+        transform: translateX(0px);
+
+        /* ...省略代码 */
+        /* transform: translateZ(-100px) translateX(-100px) rotateY(90deg); */
+      }
+      .dice-right {
+        /* ...省略代码 */
+        transform: translateX(250px);
+
+        /* transform: translateZ(-100px) translateX(100px) rotateY(-90deg); */
+      }
+      .dice-end {
+        /* ...省略代码 */
+        /* transform: translateZ(-200px); */
+        transform: translateX(500px);
+      }
+      .dice-bottom {
+        /* ...省略代码 */
+        /* transform: translateZ(-100px) translateY(100px) rotateX(-90deg);
+         */
+        transform: translateX(-500px);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="contanter">
+      <div class="dice">
+        <div class="dice-font">
+          <li></li>
+        </div>
+        <div class="dice-top">
+          <li></li>
+          <li></li>
+        </div>
+        <div class="dice-left">
+          <li></li>
+          <li></li>
+          <li></li>
+        </div>
+        <div class="dice-right">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </div>
+        <div class="dice-end">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </div>
+        <div class="dice-bottom">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

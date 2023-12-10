@@ -1,87 +1,5 @@
-// function myPromiseall(promiseArr) {
-//   let resArr = [];
-//   let count = 0;
-//   return new Promise((resolve, reject) => {
-//     const process = (index, value) => {
-//       resArr[index] = value;
-//       count++;
-
-//       if (count === promiseArr.length) {
-//         resolve(resArr);
-//       }
-//     };
-
-//     for (let i = 0; i < promiseArr.length; i++) {
-//       promiseArr[i].then(
-//         (res) => {
-//           process(i, res);
-//         },
-//         (err) => {
-//           reject(err);
-//         }
-//       );
-//     }
-//   });
-// }
-
-// function myPromiseRace(promiseArr) {
-//   let resArr = [];
-//   return new Promise((resolve, reject) => {
-//     for (let i = 0; i < promiseArr.length; i++) {
-//       promiseArr[i].then(
-//         (res) => {
-//           process(i, res);
-//         },
-//         (err) => {
-//           reject(err);
-//         }
-//       );
-//     }
-//   });
-// }
-
-// const p1 = new Promise((resolve, reject) => {
-//   reject("1");
-// });
-// const p2 = new Promise((resolve, reject) => {
-//   resolve("2");
-// });
-
-// const p3 = new Promise((resolve, reject) => {
-//   resolve("3");
-// });
-
-// const resolved = Promise.resolve(42);
-// const rejected = Promise.reject(-1);
-
-// const allSettledPromise = Promise.allSettled([resolved, rejected]);
-
-// allSettledPromise.then(function (results) {
-//   console.log(results);
-// });
-
-// 防抖，每次只执行最后一次，用于搜索框
-function debounce(fn, delay) {
-  let timer = null;
-  return function () {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      fn.apply(this, arguments);
-    });
-  };
-}
-function throttle(fn, delay) {
-  let previous = 0;
-  return function () {
-    let now = Date.now();
-    if (now - previous > delay) {
-      fn.apply(this, arguments);
-    }
-  };
-}
-
-// 深拷贝
-function deep_clone(origin, map = new WeakMap()) {
+// 手写一个深拷贝
+function deepClone(origin, map = new WeakMap()) {
   if (typeof origin !== "object") {
     return origin;
   }
@@ -96,29 +14,62 @@ function deep_clone(origin, map = new WeakMap()) {
   map.set(origin, target);
 
   for (let key in origin) {
-    if (origin.hasOwnProperty(key)) {
-      target[key] = deep_clone(origin[key], map);
+    // 用来防止遍历到原型上的属性
+    if (Object.hasOwnProperty(key)) {
+      target[key] = deepClone(origin[key], map);
     }
   }
 
   return target;
 }
 
-// 数组扁平化，通过递归的方式实现
-function flat(arr, deep) {
-  let res = [];
+// 手写一个call和apply
+Function.prototype.myCall = (thisArg, ...args) => {
+  // const obj = thisArg === undefined ? window : Object.create(thisArg);
+  const o = thisArg === undefined ? window : Object(thisArg);
 
-  (function innerFlat(innerArr, innerDeep) {
-    for (let value of innerArr) {
-      if (Array.isArray(value) && innerDeep > 0) {
-        innerFlat(value, innerDeep - 1);
-      } else {
-        res.push(value);
-      }
-    }
-  })(arr, deep);
+  const key = Symbol();
 
-  return res;
+  o[key] = this;
+  // call
+  const returnVal = o[key](...args);
+  //如果是apply 上面就不是 ...args 而是 arg
+  delete o[key];
+  return returnVal;
+};
+
+// call的作用：拿到别人的this,并执行自己的函数，this指向的是thisArg
+// 手写一个new
+function myNew(origin, ...args) {
+  let target = Object.create(origin.prototype);
+  let returnValue = origin.apply(this, args);
+
+  return returnValue instanceof Object ? returnValue : target;
 }
 
-// console.log(flat([1, 2, 3, [4, 5, [6, 7]]], 2));
+//手写promise.all
+function myPromiseAll(array) {
+  let res = [];
+  let count = 0;
+
+  return new Promise((resolve, reject) => {
+    const processData = (item, index) => {
+      res[index] = item;
+      count++;
+      if (count === array.length - 1) {
+        resolve(res);
+      }
+    };
+
+    for (let i = 0; i < array.length; i++) {
+      array[i]().then(
+        ((res) => {
+          processData(res, i);
+        },
+        (err) => {
+          reject(err);
+        })
+      );
+    }
+  });
+}

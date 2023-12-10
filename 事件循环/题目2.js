@@ -5,9 +5,10 @@ async function async1() {
 }
 
 async function async2() {
+  console.log("async2 start");
   return new Promise((resolve) => {
-    console.log("async2");
     resolve();
+    console.log("async2 promise");
   });
 }
 
@@ -22,17 +23,25 @@ async1();
 new Promise(function (resolve) {
   console.log("promise1");
   resolve();
-}).then(function () {
-  console.log("promise2");
-});
+})
+  .then(function () {
+    console.log("promise2");
+  })
+  .then(function () {
+    console.log("promise3");
+  });
 console.log("script end");
 
-// [setTimeout]
-// [async1end, ]
-// script start
-// async1 start
-// promise1
-// async2
-// promise2
-// async1 end
-// setTimeout
+//[promise3,async1end]
+//[setTimeout]
+
+//script start
+//async1 start
+//async2 start
+//async2 promise
+//promise1
+//script end
+//promise2
+//promise3
+//async1 end
+//script start
